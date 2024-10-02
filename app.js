@@ -1,12 +1,15 @@
-import express from 'express';
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const { connectDB } = require('./config/db');
 
 const app = express();
-const port = 3000;
+connectDB();
 
-app.get('/', (req, res) => {
-    res.send('Olá mundo!');
-});
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
-app.listen(port, () => {
-    console.log(`Servidor escutando em http://localhost:${port}`);
-});
+module.exports = app;
