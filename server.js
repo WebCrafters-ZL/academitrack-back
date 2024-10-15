@@ -3,6 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors'); // Middleware para CORS (opcional)
+
 const { connectDB } = require('./config/db');
 
 const routes = require('./routes');
