@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const Usuario = require('../models/Usuario');
+const transporter = require('../config/mailer');  // Importando o transporter
 
 const login = async (req, res) => {
     const { email, senha } = req.body;
@@ -49,14 +49,14 @@ const solicitarRedefinicaoSenha = async (req, res) => {
         usuario.resetSenhaExpira = Date.now() + 3600000;
         await usuario.save();
 
-        const transporter = nodemailer.createTransport({ /* configurar transporte */ });
         const mailOptions = {
-            from: 'noreply@seusistema.com',
+            from: 'noreply@academitrack.edu.br',
             to: email,
             subject: 'Redefinição de Senha',
-            text: `Redefina sua senha clicando no link:\nhttp://localhost:3000/redefinir-senha/${resetToken}`
+            text: `Redefina sua senha clicando no link:\nhttp://localhost:8080/redefinir-senha/${resetToken}`
         };
-        await transporter.sendMail(mailOptions);
+
+        await transporter.sendMail(mailOptions); // Usando o transporter importado
 
         res.json({ message: 'E-mail de redefinição de senha enviado.' });
     } catch (error) {

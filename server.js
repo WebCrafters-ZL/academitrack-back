@@ -3,31 +3,31 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
 const { connectDB } = require('./config/db');
 const routes = require('./routes');
+const rateLimit = require('./config/rateLimit');  // Importando o rate limit de config
+require('dotenv').config();
 
 const app = express();
 
 // Conectar ao banco de dados
 connectDB();
 
-// Limitar requisições a 100 por 15 minutos por IP
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Limite de 100 requisições por IP
-    message: 'Muitas requisições feitas a partir deste IP, tente novamente mais tarde.'
-});
-
 // Aplica o rate limit a todas as rotas
-app.use(limiter);
+app.use(rateLimit);
 
 // Middlewares
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors()); // Habilitar CORS (opcional)
+
+// Configurando CORS com opções
+const corsOptions = {
+    origin: process.env.ALLOWED_ORIGINS.split(','),
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Servir arquivos estáticos, se necessário (ex: um build do React)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,11 +44,17 @@ app.use((req, res, next) => {
 
 // Middleware para lidar com erros gerais
 app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+
     if (process.env.NODE_ENV === 'development') {
-        console.error(error.stack);
+        return res.json({
+            error: {
+                message: error.message,
+                stack: error.stack
+            }
+        });
     }
 
-    res.status(error.status || 500);
     res.json({
         error: {
             message: error.message
