@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 mongoose.Promise = global.Promise; // Usa a Promise global para mongoose
 mongoose.set('strictQuery', true); // Recomendado para versões mais recentes do Mongoose
