@@ -4,6 +4,63 @@
 
 O projeto **AcademiTrack** é uma aplicação web desenvolvida para gerenciar e acompanhar o progresso acadêmico de estudantes. Ele oferece funcionalidades como cadastro de alunos, registro de notas, geração de relatórios e muito mais.
 
+### Estrutura do Projeto
+
+```
+.
+├── bin                         # Diretório para scripts executáveis
+│   └── www                     # Script principal para iniciar o servidor
+├── config                      # Configurações do aplicativo
+│   ├── db.js                   # Configuração do banco de dados
+│   ├── mailer.js               # Configuração do serviço de envio de e-mails
+│   └── rateLimit.js            # Configuração de limite de requisições
+├── controllers                 # Controladores que gerenciam a lógica de negócios
+│   ├── alunoController.js      # Controlador para operações relacionadas a alunos
+│   ├── authController.js       # Controlador para autenticação de usuários
+│   ├── cursoController.js      # Controlador para operações relacionadas a cursos
+│   ├── disciplinaController.js # Controlador para operações relacionadas a disciplinas
+│   └── professorController.js  # Controlador para operações relacionadas a professores
+├── helpers                     # Funções auxiliares
+│   └── validadores.js          # Funções de validação
+├── middlewares                 # Middlewares para processamento de requisições
+│   └── authMiddleware.js       # Middleware para autenticação de usuários
+├── models                      # Modelos de dados
+│   ├── Administrador.js        # Modelo para Administrador
+│   ├── Aluno.js                # Modelo para Aluno
+│   ├── Curso.js                # Modelo para Curso
+│   ├── Disciplina.js           # Modelo para Disciplina
+│   ├── Professor.js            # Modelo para Professor
+│   └── Usuario.js              # Modelo para Usuário
+├── package.json                # Arquivo de configuração do npm
+├── package-lock.json           # Bloqueio de versões das dependências
+├── README.md                   # Documentação do projeto
+├── routes                      # Definição das rotas da API
+│   ├── administrador           # Rotas específicas para Administradores
+│   │   └── routes.js           # Definição das rotas de Administrador
+│   ├── aluno                   # Rotas específicas para Alunos
+│   │   └── routes.js           # Definição das rotas de Aluno
+│   ├── authRoutes.js           # Rotas de autenticação
+│   ├── index.js                # Arquivo principal para agrupar rotas
+│   └── professor               # Rotas específicas para Professores
+│       └── routes.js           # Definição das rotas de Professor
+└── server.js                   # Arquivo principal para iniciar o servidor
+```
+
+
+#### Descrição Geral
+
+- **bin**: Contém scripts executáveis, como o script para iniciar o servidor.
+- **config**: Armazena as configurações do aplicativo, incluindo banco de dados e serviços externos.
+- **controllers**: Contém a lógica de negócios, separando as operações por entidade.
+- **helpers**: Funções auxiliares que podem ser reutilizadas em diferentes partes do aplicativo.
+- **middlewares**: Funções que processam as requisições antes de chegarem aos controladores.
+- **models**: Representações dos dados e suas interações com o banco de dados.
+- **routes**: Define as rotas da API, organizadas por entidade e funcionalidade.
+- **package.json** e **package-lock.json**: Gerenciam as dependências do projeto.
+- **README.md**: Documentação do projeto.
+- **server.js**: Ponto de entrada do aplicativo, onde o servidor é iniciado.
+
+
 ### Tecnologias Utilizadas
 
 - **Node.js**: Plataforma de desenvolvimento para executar código JavaScript no servidor.
