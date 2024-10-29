@@ -7,13 +7,10 @@ const administradorSchema = new mongoose.Schema({
   telefone: { type: String, required: true },
   endereco: { type: String },
   status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-  dataCadastro: { type: Date, default: Date.now },
-  dataAtualizacao: { type: Date, default: Date.now }
-});
-
-administradorSchema.pre('save', function(next) {
-  this.dataAtualizacao = new Date();
-  next();
+  timestamps: {
+    createdAt: 'criadoEm',
+    updatedAt: 'atualizadoEm'
+  }
 });
 
 const Administrador = mongoose.model('Administrador', administradorSchema);

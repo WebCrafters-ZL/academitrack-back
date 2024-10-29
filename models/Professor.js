@@ -12,13 +12,10 @@ const professorSchema = new mongoose.Schema({
   matricula: { type: String, required: true, unique: true },
   disciplinas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Disciplina' }],
   status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-  dataCadastro: { type: Date, default: Date.now },
-  dataAtualizacao: { type: Date, default: Date.now }
-});
-
-professorSchema.pre('save', function (next) {
-  this.dataAtualizacao = new Date();
-  next();
+  timestamps: {
+    createdAt: 'criadoEm',
+    updatedAt: 'atualizadoEm'
+  }
 });
 
 const Professor = mongoose.model('Professor', professorSchema);
