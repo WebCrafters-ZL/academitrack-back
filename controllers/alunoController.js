@@ -9,18 +9,16 @@ const cadastrarAluno = async (req, res) => {
             nomeCompleto,
             email,
             senha,
-            matricula,
-            telefone,
-            dataNascimento,
             cpf,
-            curso,
-            periodo,
-            dataMatricula,
+            dataNascimento,
+            telefone,
+            endereco,
+            matricula
         } = req.body;
 
         // Verificar se todos os campos obrigatórios foram fornecidos
-        if (!nomeCompleto || !email || !senha || !matricula || !telefone || !dataNascimento || !cpf || !curso || !periodo || !dataMatricula) {
-            return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+        if (!nomeCompleto || !email || !senha || !cpf || !dataNascimento || !telefone || !matricula) {
+            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
         // Cria um novo usuário com tipo "aluno"
@@ -28,28 +26,26 @@ const cadastrarAluno = async (req, res) => {
         const novoUsuario = new Usuario({
             email,
             senha: hashedSenha,
-            tipoUsuario: 'aluno'  // Definir o tipo de usuário como "aluno"
+            tipoUsuario: 'aluno'  // Define o tipo de usuário como "aluno"
         });
-        await novoUsuario.save();  // Certifique-se de que o usuário foi salvo
+        await novoUsuario.save();
 
         // Cria um novo aluno referenciando o usuário
         const novoAluno = new Aluno({
             nomeCompleto,
-            matricula,
-            telefone,
-            dataNascimento,
             cpf,
-            curso,
-            periodo,
-            dataMatricula,
-            usuario_id: novoUsuario._id // Referência ao usuário recém-criado
+            dataNascimento,
+            telefone,
+            endereco,
+            matricula,
+            usuario_id: novoUsuario._id
         });
 
-        await novoAluno.save(); // Salva o aluno
+        await novoAluno.save();
 
-        res.status(201).json(novoAluno); // Retorna o aluno cadastrado
+        res.status(201).json(novoAluno);
     } catch (error) {
-        console.error(error);  // Log para ajudar na depuração
+        console.error(error);
         res.status(500).json({ message: 'Erro ao cadastrar aluno', error });
     }
 };
@@ -57,7 +53,7 @@ const cadastrarAluno = async (req, res) => {
 // Listar todos os alunos
 const listarAlunos = async (req, res) => {
     try {
-        const alunos = await Aluno.find().populate('usuario_id'); // Popula o campo 'usuario_id' com os dados do usuário
+        const alunos = await Aluno.find().populate('usuario_id');
         res.status(200).json(alunos);
     } catch (error) {
         console.error(error);
@@ -81,7 +77,7 @@ const pesquisarAluno = async (req, res) => {
 // Atualizar aluno
 const atualizarAluno = async (req, res) => {
     try {
-        const { nomeCompleto, email, senha, matricula, telefone, dataNascimento, cpf, curso, periodo, dataMatricula } = req.body;
+        const { nomeCompleto, email, senha, cpf, dataNascimento, telefone, endereco, matricula } = req.body;
         const aluno = await Aluno.findById(req.params.id);
 
         if (!aluno) {
@@ -96,16 +92,14 @@ const atualizarAluno = async (req, res) => {
 
         // Atualiza os dados do aluno
         if (nomeCompleto) aluno.nomeCompleto = nomeCompleto;
-        if (matricula) aluno.matricula = matricula;
-        if (telefone) aluno.telefone = telefone;
-        if (dataNascimento) aluno.dataNascimento = dataNascimento;
         if (cpf) aluno.cpf = cpf;
-        if (curso) aluno.curso = curso;
-        if (periodo) aluno.periodo = periodo;
-        if (dataMatricula) aluno.dataMatricula = dataMatricula;
+        if (dataNascimento) aluno.dataNascimento = dataNascimento;
+        if (telefone) aluno.telefone = telefone;
+        if (endereco) aluno.endereco = endereco;
+        if (matricula) aluno.matricula = matricula;
         await aluno.save();
 
-        res.status(200).json(aluno); // Retorna o aluno atualizado
+        res.status(200).json(aluno);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao atualizar aluno', error });
