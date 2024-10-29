@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { validarCPF } = require('../utils/validacoes');
+const { validarCPF } = require('../helpers/validadores');
 
 const administradorSchema = new mongoose.Schema({
   nomeCompleto: {
@@ -22,12 +22,14 @@ const administradorSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Usuario',
     required: true
-  },
-  timestamps: {
-    createdAt: 'criadoEm',
-    updatedAt: 'atualizadoEm'
   }
-});
+},
+  {
+    timestamps: {
+      createdAt: 'criadoEm',
+      updatedAt: 'atualizadoEm'
+    }
+  });
 
 const Administrador = mongoose.model('Administrador', administradorSchema);
 

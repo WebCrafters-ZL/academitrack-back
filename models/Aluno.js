@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { validarCPF } = require('../utils/validacoes');
+const { validarCPF } = require('../helpers/validadores');
 
 const alunoSchema = new mongoose.Schema({
   nomeCompleto: {
@@ -38,12 +38,14 @@ const alunoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Usuario',
     required: true
-  },
-  timestamps: {
-    createdAt: 'criadoEm',
-    updatedAt: 'atualizadoEm'
   }
-});
+},
+  {
+    timestamps: {
+      createdAt: 'criadoEm',
+      updatedAt: 'atualizadoEm'
+    }
+  });
 
 const Aluno = mongoose.model('Aluno', alunoSchema);
 module.exports = Aluno;

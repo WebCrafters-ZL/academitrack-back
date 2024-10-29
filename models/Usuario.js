@@ -29,12 +29,14 @@ const usuarioSchema = new mongoose.Schema({
     senhaRedefinida: {
         type: Boolean,
         default: false
-    },
-    timestamps: {
-        createdAt: 'criadoEm',
-        updatedAt: 'atualizadoEm'
     }
-});
+},
+    {
+        timestamps: {
+            createdAt: 'criadoEm',
+            updatedAt: 'atualizadoEm'
+        }
+    });
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);
 
