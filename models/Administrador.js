@@ -1,10 +1,28 @@
 const mongoose = require('mongoose');
+const { validarCPF } = require('../utils/validacoes');
 
 const administradorSchema = new mongoose.Schema({
-  nomeCompleto: { type: String, required: true },
-  cpf: { type: String, required: true, unique: true },
-  status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-  usuario_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+  nomeCompleto: {
+    type: String,
+    required: true
+  },
+  cpf: {
+    type: String, required: true, unique: true, validate: {
+      validator: function (v) {
+        return validarCPF(v);
+      },
+      message: props => `${props.value} não é um CPF válido!`
+    }
+  },
+  status: {
+    type: String,
+    enum: ['ativo', 'inativo'], default: 'ativo'
+  },
+  usuario_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: true
+  },
   timestamps: {
     createdAt: 'criadoEm',
     updatedAt: 'atualizadoEm'
