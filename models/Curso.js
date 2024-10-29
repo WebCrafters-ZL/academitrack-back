@@ -6,13 +6,10 @@ const cursoSchema = new mongoose.Schema({
     cargaHoraria: { type: Number, required: true },
     categoria: { type: String, required: true },
     status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-    dataCadastro: { type: Date, default: Date.now },
-    dataAtualizacao: { type: Date, default: Date.now }
-});
-
-cursoSchema.pre('save', function(next) {
-    this.dataAtualizacao = new Date();
-    next();
+    timestamps: {
+        createdAt: 'criadoEm',
+        updatedAt: 'atualizadoEm'
+    }
 });
 
 const Curso = mongoose.model('Curso', cursoSchema);

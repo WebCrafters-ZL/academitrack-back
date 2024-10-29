@@ -6,13 +6,10 @@ const disciplinaSchema = new mongoose.Schema({
     cargaHoraria: { type: Number, required: true },
     curso_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Curso', required: true },
     status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-    dataCadastro: { type: Date, default: Date.now },
-    dataAtualizacao: { type: Date, default: Date.now }
-});
-
-disciplinaSchema.pre('save', function(next) {
-    this.dataAtualizacao = new Date();
-    next();
+    timestamps: {
+        createdAt: 'criadoEm',
+        updatedAt: 'atualizadoEm'
+    }
 });
 
 const Disciplina = mongoose.model('Disciplina', disciplinaSchema);

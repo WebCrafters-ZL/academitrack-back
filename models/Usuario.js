@@ -12,6 +12,7 @@ const usuarioSchema = new mongoose.Schema({
     senha: {
         type: String,
         required: true,
+        trim: true,
         minlength: 8
     },
     tipoUsuario: {
@@ -29,20 +30,10 @@ const usuarioSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    dataCadastro: {
-        type: Date,
-        default: Date.now
-    },
-    dataAtualizacao: {
-        type: Date,
-        default: Date.now
+    timestamps: {
+        createdAt: 'criadoEm',
+        updatedAt: 'atualizadoEm'
     }
-});
-
-// Middleware para atualizar o campo dataAtualizacao
-usuarioSchema.pre('save', function (next) {
-    this.dataAtualizacao = new Date();
-    next();
 });
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);

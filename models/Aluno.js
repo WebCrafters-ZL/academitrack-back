@@ -18,13 +18,10 @@ const alunoSchema = new mongoose.Schema({
     frequencia: { type: Number, min: 0, max: 100 }
   }],
   status: { type: String, enum: ['ativo', 'inativo'], default: 'ativo' },
-  dataCadastro: { type: Date, default: Date.now },
-  dataAtualizacao: { type: Date, default: Date.now }
-});
-
-alunoSchema.pre('save', function (next) {
-  this.dataAtualizacao = new Date();
-  next();
+  timestamps: {
+    createdAt: 'criadoEm',
+    updatedAt: 'atualizadoEm'
+  }
 });
 
 const Aluno = mongoose.model('Aluno', alunoSchema);
