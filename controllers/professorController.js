@@ -9,17 +9,16 @@ const cadastrarProfessor = async (req, res) => {
             nomeCompleto,
             email,
             senha,
-            matricula,
-            telefone,
-            especialidade,
-            formacaoAcademica,
+            cpf,
             dataNascimento,
-            cpf
+            formacaoAcademica,
+            especialidade,
+            matricula
         } = req.body;
 
         // Verificar se todos os campos obrigatórios foram fornecidos
-        if (!nomeCompleto || !email || !senha || !matricula || !telefone || !especialidade || !formacaoAcademica || !dataNascimento || !cpf) {
-            return res.status(400).json({ message: "Todos os campos são obrigatórios" });
+        if (!nomeCompleto || !email || !senha || !cpf || !dataNascimento || !formacaoAcademica || !especialidade || !matricula) {
+            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
         // Cria um novo usuário com tipo "professor"
@@ -27,27 +26,26 @@ const cadastrarProfessor = async (req, res) => {
         const novoUsuario = new Usuario({
             email,
             senha: hashedSenha,
-            tipoUsuario: 'professor'  // Definir o tipo de usuário como "professor"
+            tipoUsuario: 'professor'  // Define o tipo de usuário como "professor"
         });
-        await novoUsuario.save();  // Certifique-se de que o usuário foi salvo
+        await novoUsuario.save();
 
         // Cria um novo professor referenciando o usuário
         const novoProfessor = new Professor({
             nomeCompleto,
-            matricula,
-            telefone,
-            especialidade,
-            formacaoAcademica,
-            dataNascimento,
             cpf,
-            usuario_id: novoUsuario._id // Referência ao usuário recém-criado
+            dataNascimento,
+            formacaoAcademica,
+            especialidade,
+            matricula,
+            usuario_id: novoUsuario._id
         });
 
-        await novoProfessor.save(); // Salva o professor
+        await novoProfessor.save();
 
-        res.status(201).json(novoProfessor); // Retorna o professor cadastrado
+        res.status(201).json(novoProfessor);
     } catch (error) {
-        console.error(error);  // Log para ajudar na depuração
+        console.error(error);
         res.status(500).json({ message: 'Erro ao cadastrar professor', error });
     }
 };
@@ -55,7 +53,7 @@ const cadastrarProfessor = async (req, res) => {
 // Listar todos os professores
 const listarProfessores = async (req, res) => {
     try {
-        const professores = await Professor.find().populate('usuario_id'); // Popula o campo 'usuario_id' com os dados do usuário
+        const professores = await Professor.find().populate('usuario_id');
         res.status(200).json(professores);
     } catch (error) {
         console.error(error);
@@ -79,7 +77,7 @@ const pesquisarProfessor = async (req, res) => {
 // Atualizar professor
 const atualizarProfessor = async (req, res) => {
     try {
-        const { nomeCompleto, email, senha, matricula, telefone, especialidade, formacaoAcademica, dataNascimento, cpf } = req.body;
+        const { nomeCompleto, email, senha, cpf, dataNascimento, formacaoAcademica, especialidade, matricula } = req.body;
         const professor = await Professor.findById(req.params.id);
 
         if (!professor) {
@@ -94,15 +92,14 @@ const atualizarProfessor = async (req, res) => {
 
         // Atualiza os dados do professor
         if (nomeCompleto) professor.nomeCompleto = nomeCompleto;
-        if (matricula) professor.matricula = matricula;
-        if (telefone) professor.telefone = telefone;
-        if (especialidade) professor.especialidade = especialidade;
-        if (formacaoAcademica) professor.formacaoAcademica = formacaoAcademica;
-        if (dataNascimento) professor.dataNascimento = dataNascimento;
         if (cpf) professor.cpf = cpf;
+        if (dataNascimento) professor.dataNascimento = dataNascimento;
+        if (formacaoAcademica) professor.formacaoAcademica = formacaoAcademica;
+        if (especialidade) professor.especialidade = especialidade;
+        if (matricula) professor.matricula = matricula;
         await professor.save();
 
-        res.status(200).json(professor); // Retorna o professor atualizado
+        res.status(200).json(professor);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao atualizar professor', error });

@@ -7,7 +7,10 @@ const alunoSchema = new mongoose.Schema({
     required: true
   },
   cpf: {
-    type: String, required: true, unique: true, validate: {
+    type: String, 
+    required: true, 
+    unique: true, 
+    validate: {
       validator: function (v) {
         return validarCPF(v);
       },
