@@ -16,37 +16,40 @@ const cadastrarAluno = async (req, res) => {
             matricula
         } = req.body;
 
-        // Verificar se todos os campos obrigatórios foram fornecidos
         if (!nomeCompleto || !email || !senha || !cpf || !dataNascimento || !telefone || !matricula) {
             return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos" });
         }
 
-        // Cria um novo usuário com tipo "aluno"
         const hashedSenha = await bcrypt.hash(senha, 10);
         const novoUsuario = new Usuario({
             email,
             senha: hashedSenha,
-            tipoUsuario: 'aluno'  // Define o tipo de usuário como "aluno"
+            tipoUsuario: 'aluno'
         });
         await novoUsuario.save();
 
-        // Cria um novo aluno referenciando o usuário
-        const novoAluno = new Aluno({
-            nomeCompleto,
-            cpf,
-            dataNascimento,
-            telefone,
-            endereco,
-            matricula,
-            usuario_id: novoUsuario._id
-        });
+        try {
+            const novoAluno = new Aluno({
+                nomeCompleto,
+                cpf,
+                dataNascimento,
+                telefone,
+                endereco,
+                matricula,
+                usuario_id: novoUsuario._id
+            });
+            await novoAluno.save();
 
-        await novoAluno.save();
-
-        res.status(201).json(novoAluno);
+            // Retorna uma mensagem de sucesso junto com o código 201
+            res.status(201).json({ message: "Aluno cadastrado com sucesso!", aluno: novoAluno });
+        } catch (error) {
+            await Usuario.findByIdAndDelete(novoUsuario._id);
+            console.error("Erro ao salvar Aluno, rollback do Usuario:", error);
+            res.status(500).json({ message: "Erro ao cadastrar aluno", error });
+        }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erro ao cadastrar aluno', error });
+        res.status(500).json({ message: "Erro ao cadastrar aluno", error });
     }
 };
 

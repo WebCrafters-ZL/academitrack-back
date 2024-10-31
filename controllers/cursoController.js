@@ -2,13 +2,13 @@ const Curso = require('../models/Curso');
 
 const cadastrarCurso = async (req, res) => {
     try {
-        const { nome, descricao, cargaHoraria, categoria } = req.body;
+        const { nome, codigo, descricao, cargaHoraria, categoria } = req.body;
         if (!nome || !descricao || !cargaHoraria || !categoria) {
             return res.status(400).json({ message: 'Parâmetros obrigatórios faltando' });
         }
-        const novoCurso = new Curso({ nome, descricao, cargaHoraria, categoria });
+        const novoCurso = new Curso({ nome, codigo, descricao, cargaHoraria, categoria });
         await novoCurso.save();
-        return res.status(201).json(curso);
+        return res.status(201).json(novoCurso);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Erro ao cadastrar curso', error });
@@ -39,12 +39,13 @@ const pesquisarCurso = async (req, res) => {
 
 const atualizarCurso = async (req, res) => {
     try {
-        const { nome, descricao, cargaHoraria, categoria } = req.body;
+        const { nome, codigo, descricao, cargaHoraria, categoria } = req.body;
         const curso = await Curso.findById(req.params.id);
         if (!curso) {
             return res.status(404).json({ message: 'Curso não encontrado' });
         }
         if (nome) curso.nome = nome;
+        if (codigo) curso.codigo = codigo;
         if (descricao) curso.descricao = descricao;
         if (cargaHoraria) curso.cargaHoraria = cargaHoraria;
         if (categoria) curso.categoria = categoria;

@@ -5,6 +5,9 @@ const cursoSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    codigo: {
+        type: String
+    },
     descricao: { 
         type: String, 
         required: true 
