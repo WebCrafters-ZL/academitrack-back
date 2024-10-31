@@ -65,7 +65,8 @@ const listarAlunos = async (req, res) => {
             telefone: aluno.telefone,
             endereco: aluno.endereco,
             matricula: aluno.matricula,
-            email: aluno.usuario_id.email // Inclui o email do usuário
+            email: aluno.usuario_id.email, // Inclui o email do usuário
+            status: aluno.status
         }));
         res.status(200).json(alunosComEmail);
     } catch (error) {
@@ -89,7 +90,8 @@ const pesquisarAluno = async (req, res) => {
             telefone: aluno.telefone,
             endereco: aluno.endereco,
             matricula: aluno.matricula,
-            email: aluno.usuario_id.email // Inclui o email do usuário
+            email: aluno.usuario_id.email, // Inclui o email do usuário
+            status: aluno.status
         };
         res.status(200).json(alunoComEmail);
     } catch (error) {
