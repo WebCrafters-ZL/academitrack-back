@@ -8,7 +8,7 @@ const cadastrarCurso = async (req, res) => {
         }
         const novoCurso = new Curso({ nome, codigo, descricao, cargaHoraria, categoria });
         await novoCurso.save();
-        return res.status(201).json(curso);
+        return res.status(201).json(novoCurso);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Erro ao cadastrar curso', error });
