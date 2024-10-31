@@ -56,8 +56,18 @@ const cadastrarAluno = async (req, res) => {
 // Listar todos os alunos
 const listarAlunos = async (req, res) => {
     try {
-        const alunos = await Aluno.find().populate('usuario_id');
-        res.status(200).json(alunos);
+        const alunos = await Aluno.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
+        const alunosComEmail = alunos.map(aluno => ({
+            _id: aluno._id,
+            nomeCompleto: aluno.nomeCompleto,
+            cpf: aluno.cpf,
+            dataNascimento: aluno.dataNascimento,
+            telefone: aluno.telefone,
+            endereco: aluno.endereco,
+            matricula: aluno.matricula,
+            email: aluno.usuario_id.email // Inclui o email do usuário
+        }));
+        res.status(200).json(alunosComEmail);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao listar alunos', error });
@@ -67,11 +77,21 @@ const listarAlunos = async (req, res) => {
 // Pesquisar aluno por ID
 const pesquisarAluno = async (req, res) => {
     try {
-        const aluno = await Aluno.findById(req.params.id).populate('usuario_id');
+        const aluno = await Aluno.findById(req.params.id).populate('usuario_id', 'email'); // Popula apenas o campo 'email'
         if (!aluno) {
             return res.status(404).json({ message: 'Aluno não encontrado' });
         }
-        res.status(200).json(aluno);
+        const alunoComEmail = {
+            _id: aluno._id,
+            nomeCompleto: aluno.nomeCompleto,
+            cpf: aluno.cpf,
+            dataNascimento: aluno.dataNascimento,
+            telefone: aluno.telefone,
+            endereco: aluno.endereco,
+            matricula: aluno.matricula,
+            email: aluno.usuario_id.email // Inclui o email do usuário
+        };
+        res.status(200).json(alunoComEmail);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao pesquisar aluno', error });
     }
