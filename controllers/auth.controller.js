@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const Usuario = require('../models/Usuario');
+const Usuario = require('../models/usuario.model');
 const transporter = require('../config/mailer');  // Importando o transporter
 
 const login = async (req, res) => {
