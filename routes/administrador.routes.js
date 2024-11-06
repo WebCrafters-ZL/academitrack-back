@@ -3,7 +3,8 @@ const alunoController = require('../controllers/aluno.controller');
 const professorController = require('../controllers/professor.controller');
 const cursoController = require('../controllers/curso.controller');
 const disciplinaController = require('../controllers/disciplina.controller');
-const { isLoggedIn, isAdmin } = require('../middlewares/auth.middleware'); // Importa o middleware
+const turmaController = require('../controllers/turma.controller');
+const { isLoggedIn, isAdmin } = require('../middlewares/auth.middleware');
 const router = express.Router();
 
 // Rotas para gerenciamento de alunos
@@ -33,5 +34,14 @@ router.get('/disciplinas', isLoggedIn, isAdmin, disciplinaController.listarDisci
 router.post('/disciplinas', isLoggedIn, isAdmin, disciplinaController.cadastrarDisciplina);
 router.put('/disciplinas/:id', isLoggedIn, isAdmin, disciplinaController.atualizarDisciplina);
 router.delete('/disciplinas/:id', isLoggedIn, isAdmin, disciplinaController.excluirDisciplina);
+
+// Rotas para gerenciamento de turmas
+router.post('/turmas', isLoggedIn, isAdmin, turmaController.criarTurma);
+router.get('/turmas', isLoggedIn, isAdmin, turmaController.listarTurmas);
+router.get('/turmas/:id', isLoggedIn, isAdmin, turmaController.obterTurma);
+router.put('/turmas/:id', isLoggedIn, isAdmin, turmaController.atualizarTurma);
+router.delete('/turmas/:id', isLoggedIn, isAdmin, turmaController.excluirTurma);
+router.post('/turmas/:id/alunos', isLoggedIn, isAdmin, turmaController.adicionarAluno);
+router.delete('/turmas/:id/alunos', isLoggedIn, isAdmin, turmaController.removerAluno);
 
 module.exports = router;
