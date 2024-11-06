@@ -1,5 +1,5 @@
-const Disciplina = require('../models/Disciplina');
-const Curso = require('../models/Curso');
+const Disciplina = require('../models/disciplina.model');
+const Curso = require('../models/curso.model');
 
 const cadastrarDisciplina = async (req, res) => {
     try {

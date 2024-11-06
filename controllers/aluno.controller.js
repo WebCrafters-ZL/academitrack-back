@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const Aluno = require('../models/Aluno');
-const Usuario = require('../models/Usuario');
+const Aluno = require('../models/aluno.model');
+const Usuario = require('../models/usuario.model');
 
 // Cadastrar aluno
 const cadastrarAluno = async (req, res) => {
