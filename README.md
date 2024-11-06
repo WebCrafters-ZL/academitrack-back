@@ -1,4 +1,4 @@
-# AcademiTrack 🎓
+# AcademiTrack - Backend 🎓
 
 ## Sobre o Projeto
 
