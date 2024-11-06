@@ -2,7 +2,7 @@
 
 ## Sobre o Projeto
 
-AcademiTrack é um sistema de gerenciamento acadêmico desenvolvido como parte de um projeto interdisciplinar. Esta aplicação web foi criada para auxiliar instituições educacionais no acompanhamento do progresso de seus estudantes, oferecendo uma solução completa e intuitiva.
+AcademiTrack é um sistema de gerenciamento acadêmico desenvolvido como parte de um projeto interdisciplinar. Este repositório contém o backend da aplicação, construído com Node.js e Express, oferecendo uma API robusta e escalável para gerenciar dados acadêmicos e suportar as operações do frontend.
 
 ## Funcionalidades Principais
 
