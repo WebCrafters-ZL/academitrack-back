@@ -20,7 +20,7 @@ exports.isLoggedIn = (req, res, next) => {
 };
 
 exports.isAdmin = (req, res, next) => {
-  if (req.usuario && req.usuario.tipo === 'admin') {
+  if (req.usuario && req.usuario.tipo === 'administrador') {
     next();
   } else {
     res.status(403).json({ error: 'Acesso negado, permissões insuficientes.' });
