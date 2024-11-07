@@ -1,111 +1,94 @@
-# Projeto Interdisciplinar - AcademiTrack
+# AcademiTrack - Backend 🎓
 
-## Sobre
+## Sobre o Projeto
 
-O projeto **AcademiTrack** é uma aplicação web desenvolvida para gerenciar e acompanhar o progresso acadêmico de estudantes. Ele oferece funcionalidades como cadastro de alunos, registro de notas, geração de relatórios e muito mais.
+AcademiTrack é um sistema de gerenciamento acadêmico desenvolvido como parte de um projeto interdisciplinar. Este repositório contém o backend da aplicação, construído com Node.js e Express, oferecendo uma API robusta e escalável para gerenciar dados acadêmicos e suportar as operações do frontend.
 
-### Estrutura do Projeto
+## Funcionalidades Principais
+
+- 📝 Cadastro e gerenciamento de alunos
+- 📊 Registro de notas e frequência
+- 📈 Geração de relatórios acadêmicos
+- 🔐 Autenticação segura de usuários
+
+## Tecnologias Utilizadas
+
+- **Backend**: Node.js com Express
+- **Banco de Dados**: MongoDB com Mongoose
+- **Autenticação**: JWT (JSON Web Tokens)
+- **Segurança**: bcryptjs para hash de senhas
+- **Desenvolvimento**: Nodemon para hot-reloading
+
+## Estrutura do Projeto
 
 ```
-.
-├── bin                         # Diretório para scripts executáveis
-│   └── www                     # Script principal para iniciar o servidor
-├── config                      # Configurações do aplicativo
-│   ├── db.js                   # Configuração do banco de dados
-│   ├── mailer.js               # Configuração do serviço de envio de e-mails
-│   └── rateLimit.js            # Configuração de limite de requisições
-├── controllers                 # Controladores que gerenciam a lógica de negócios
-│   ├── alunoController.js      # Controlador para operações relacionadas a alunos
-│   ├── authController.js       # Controlador para autenticação de usuários
-│   ├── cursoController.js      # Controlador para operações relacionadas a cursos
-│   ├── disciplinaController.js # Controlador para operações relacionadas a disciplinas
-│   └── professorController.js  # Controlador para operações relacionadas a professores
-├── helpers                     # Funções auxiliares
-│   └── validadores.js          # Funções de validação
-├── middlewares                 # Middlewares para processamento de requisições
-│   └── authMiddleware.js       # Middleware para autenticação de usuários
-├── models                      # Modelos de dados
-│   ├── Administrador.js        # Modelo para Administrador
-│   ├── Aluno.js                # Modelo para Aluno
-│   ├── Curso.js                # Modelo para Curso
-│   ├── Disciplina.js           # Modelo para Disciplina
-│   ├── Professor.js            # Modelo para Professor
-│   └── Usuario.js              # Modelo para Usuário
-├── package.json                # Arquivo de configuração do npm
-├── package-lock.json           # Bloqueio de versões das dependências
-├── README.md                   # Documentação do projeto
-├── routes                      # Definição das rotas da API
-│   ├── administrador           # Rotas específicas para Administradores
-│   │   └── routes.js           # Definição das rotas de Administrador
-│   ├── aluno                   # Rotas específicas para Alunos
-│   │   └── routes.js           # Definição das rotas de Aluno
-│   ├── authRoutes.js           # Rotas de autenticação
-│   ├── index.js                # Arquivo principal para agrupar rotas
-│   └── professor               # Rotas específicas para Professores
-│       └── routes.js           # Definição das rotas de Professor
-└── server.js                   # Arquivo principal para iniciar o servidor
+academitrack-back/
+├── bin/
+│   └── www                 # Script de inicialização
+├── config/
+│   ├── db.js               # Configuração do banco de dados
+│   ├── mailer.js           # Configuração de e-mail
+│   └── rateLimit.js        # Limitação de requisições
+├── controllers/            # Lógica de negócios
+├── helpers/
+│   └── validarCpf.helper.js
+├── middlewares/
+│   └── auth.middleware.js  # Middleware de autenticação
+├── models/                 # Modelos de dados
+├── routes/                 # Definição de rotas da API
+├── server.js               # Ponto de entrada da aplicação
+└── package.json            # Dependências e scripts
 ```
 
+## Como Iniciar
 
-#### Descrição Geral
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/WebCrafters-ZL/academitrack-back.git
+   ```
 
-- **bin**: Contém scripts executáveis, como o script para iniciar o servidor.
-- **config**: Armazena as configurações do aplicativo, incluindo banco de dados e serviços externos.
-- **controllers**: Contém a lógica de negócios, separando as operações por entidade.
-- **helpers**: Funções auxiliares que podem ser reutilizadas em diferentes partes do aplicativo.
-- **middlewares**: Funções que processam as requisições antes de chegarem aos controladores.
-- **models**: Representações dos dados e suas interações com o banco de dados.
-- **routes**: Define as rotas da API, organizadas por entidade e funcionalidade.
-- **package.json** e **package-lock.json**: Gerenciam as dependências do projeto.
-- **README.md**: Documentação do projeto.
-- **server.js**: Ponto de entrada do aplicativo, onde o servidor é iniciado.
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
 
+3. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` na raiz do projeto com base no arquivo `.env.example`
+   - Adicione as variáveis necessárias (ex: `MONGODB_URI`, `JWT_SECRET`)
 
-### Tecnologias Utilizadas
+4. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
 
-- **Node.js**: Plataforma de desenvolvimento para executar código JavaScript no servidor.
-- **Express**: Framework para Node.js que facilita a criação de APIs RESTful.
-- **MongoDB**: Banco de dados NoSQL utilizado para armazenar os dados da aplicação.
-- **Mongoose**: Biblioteca de modelagem de dados para MongoDB e Node.js.
-- **JWT (JSON Web Token)**: Utilizado para autenticação e autorização de usuários.
-- **bcrypt**: Biblioteca para hashing de senhas.
-- **dotenv**: Módulo para carregar variáveis de ambiente a partir de um arquivo `.env`.
+## Contribuindo
 
-### Módulos NPM Utilizados
+Este projeto foi desenvolvido para fins acadêmicos, mas contribuições são bem-vindas! Se você é um estudante ou desenvolvedor interessado em melhorar o AcademiTrack, siga estas etapas:
 
-Os módulos NPM utilizados estão listados no arquivo `package.json` do projeto. Alguns dos principais módulos incluem:
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-- `express`: Framework web para Node.js.
-- `mongoose`: ODM (Object Data Modeling) para MongoDB.
-- `jsonwebtoken`: Implementação de JSON Web Tokens.
-- `bcryptjs`: Biblioteca para hashing de senhas.
-- `dotenv`: Carrega variáveis de ambiente de um arquivo `.env`.
-- `nodemon`: Ferramenta que reinicia automaticamente o servidor Node.js quando arquivos são alterados durante o desenvolvimento.
-- `cors`: Middleware para habilitar CORS (Cross-Origin Resource Sharing).
+## Aprendizados do Projeto
 
-## Contribuição
+O desenvolvimento do AcademiTrack proporcionou valiosas experiências em:
 
-Se você deseja contribuir para o desenvolvimento deste projeto, siga as etapas abaixo:
+- Arquitetura de aplicações web modernas
+- Implementação de APIs RESTful
+- Gerenciamento de banco de dados NoSQL
+- Práticas de segurança em aplicações web
+- Trabalho colaborativo usando Git e GitHub
 
-1. Faça um fork deste repositório.
-2. Certifique-se de ter o Node.js instalado.
-3. Execute o comando `npm install` para instalar as dependências.
-4. Configure as variáveis de ambiente necessárias. Crie um arquivo `.env` na raiz do projeto com base no arquivo `.env.example` e adicione as variáveis necessárias.
-5. Execute o comando `npm run dev` para iniciar o servidor.
-6. Adicione o repositório remoto upstream ao seu fork: `git remote add upstream https://github.com/WebCrafters-ZL/academitrack-back.git`.
-7. Crie uma branch com o nome da sua feature: `git checkout -b minha-feature`.
-8. Faça as alterações necessárias e adicione os arquivos modificados: `git add .`.
-9. Faça o commit das suas alterações: `git commit -m "Minha feature: descrição das alterações"`.
-10. Faça o push para o repositório remoto: `git push origin minha-feature`.
-11. Abra um pull request para que suas alterações sejam revisadas.
+## Equipe
 
-### Requisitos de Contribuição
+Este projeto foi desenvolvido por estudantes da [Fatec Zona Leste](https://fateczl.cps.sp.gov.br/) como parte do curso de [Desenvolvimento de Software Multiplataforma](https://fateczl.cps.sp.gov.br/desenvolvimento-de-software-multiplataforma/).
 
-- Siga as diretrizes de estilo de código do projeto.
-- Inclua testes para suas alterações.
-- Atualize a documentação conforme necessário.
-- Certifique-se de que seu código não quebre a build.
+## Licença
 
-### Suporte
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
-Se você encontrar algum problema ou tiver alguma dúvida, abra uma issue no repositório ou entre em contato com os mantenedores do projeto.
+---
+
+📚 Desenvolvido com paixão pela educação e tecnologia 🖥️
