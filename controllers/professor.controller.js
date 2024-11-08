@@ -30,20 +30,26 @@ const cadastrarProfessor = async (req, res) => {
         });
         await novoUsuario.save();
 
-        // Cria um novo professor referenciando o usuário
-        const novoProfessor = new Professor({
-            nomeCompleto,
-            cpf,
-            dataNascimento,
-            formacaoAcademica,
-            especialidade,
-            matricula,
-            usuario_id: novoUsuario._id
-        });
+        try {
+            // Cria um novo professor referenciando o usuário
+            const novoProfessor = new Professor({
+                nomeCompleto,
+                cpf,
+                dataNascimento,
+                formacaoAcademica,
+                especialidade,
+                matricula,
+                usuario_id: novoUsuario._id
+            });
+            await novoProfessor.save();
 
-        await novoProfessor.save();
-
-        res.status(201).json(novoProfessor);
+            // Retorna uma mensagem de sucesso junto com o código 201
+            res.status(201).json({ message: "Professor cadastrado com sucesso!", professor: novoProfessor });
+        } catch (error) {
+            await Usuario.findByIdAndDelete(novoUsuario._id);
+            console.error("Erro ao salvar Professor, rollback do Usuario:", error);
+            res.status(500).json({ message: "Erro ao cadastrar professor", error });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao cadastrar professor', error });
@@ -99,7 +105,7 @@ const atualizarProfessor = async (req, res) => {
         if (matricula) professor.matricula = matricula;
         await professor.save();
 
-        res.status(200).json(professor);
+        res.status(200).json({ message: 'Professor atualizado com sucesso', professor });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao atualizar professor', error });
