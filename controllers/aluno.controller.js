@@ -124,7 +124,7 @@ const atualizarAluno = async (req, res) => {
         if (matricula) aluno.matricula = matricula;
         await aluno.save();
 
-        res.status(200).json(aluno);
+        res.status(200).json({ message: 'Aluno atualizado com sucesso', aluno });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao atualizar aluno', error });
