@@ -53,13 +53,27 @@ const cadastrarProfessor = async (req, res) => {
 // Listar todos os professores
 const listarProfessores = async (req, res) => {
     try {
-        const professores = await Professor.find().populate('usuario_id');
-        res.status(200).json(professores);
+        const professores = await Professor.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
+        
+        // Mapeia os dados dos professores para incluir as informações desejadas
+        const professoresComEmail = professores.map(professor => ({
+            _id: professor._id,
+            nomeCompleto: professor.nomeCompleto, // Certifique-se de que esse campo existe no seu modelo Professor
+            email: professor.usuario_id.email, // Inclui o email do usuário associado
+            cpf: professor.cpf, // Inclua mais campos conforme necessário
+            telefone: professor.telefone, // Inclua mais campos conforme necessário
+            status: professor.status, // Inclua mais campos conforme necessário
+            disciplina: professor.disciplina, // Exemplo de outro campo que você poderia incluir
+            // Adicione mais campos que você deseja retornar aqui
+        }));
+
+        res.status(200).json(professoresComEmail); // Retorna os dados manipulados
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao listar professores', error });
     }
 };
+
 
 // Pesquisar professor por ID
 const pesquisarProfessor = async (req, res) => {
