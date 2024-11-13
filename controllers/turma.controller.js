@@ -34,7 +34,17 @@ const listarTurmas = async (req, res) => {
       .populate('disciplina', 'nome')
       .populate('professor', 'nome')
       .populate('alunos', 'nome');
-    res.status(200).json(turmas);
+    const turmasDetalhadas = turmas.map(turma => { 
+      return {
+        id: turma._id,
+        disciplina: turma.disciplina.nome,
+        professor: turma.professor.nome,
+        alunos: turma.alunos.map(aluno => aluno.nome),
+        ano: turma.ano,
+        semestre: turma.semestre
+      };
+    });
+    res.status(200).json(turmasDetalhadas);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao listar turmas', error });
   }
@@ -49,7 +59,17 @@ const obterTurma = async (req, res) => {
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    res.json(turma);
+    const turmaDetalhada = turma.map(turma => { 
+      return {
+        id: turma._id,
+        disciplina: turma.disciplina.nome,
+        professor: turma.professor.nome,
+        alunos: turma.alunos.map(aluno => aluno.nome),
+        ano: turma.ano,
+        semestre: turma.semestre
+      };
+    });
+    res.json(turmaDetalhada);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao pesquisar turma', error });
   }
