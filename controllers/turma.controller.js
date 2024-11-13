@@ -1,93 +1,137 @@
 const Turma = require('../models/turma.model');
 
-exports.criarTurma = async (req, res) => {
+const criarTurma = async (req, res) => {
   try {
-    const novaTurma = new Turma(req.body);
-    const turmaSalva = await novaTurma.save();
-    res.status(201).json(turmaSalva);
-  } catch (erro) {
-    res.status(400).json({ mensagem: erro.message });
+    const {
+      disciplina,
+      professor,
+      alunos,
+      ano,
+      semestre
+    } = req.body;
+    if (!disciplina || !professor || !ano || !alunos || !ano || !semestre) {
+      return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos' });
+    }
+    const novaTurma = new Turma(
+      {
+        disciplina,
+        professor,
+        alunos,
+        ano,
+        semestre
+      }
+    );
+    await novaTurma.save();
+    res.status(201).json({ message: 'Turma criada com sucesso', turma: novaTurma });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
-exports.listarTurmas = async (req, res) => {
+const listarTurmas = async (req, res) => {
   try {
     const turmas = await Turma.find()
       .populate('disciplina', 'nome')
       .populate('professor', 'nome')
       .populate('alunos', 'nome');
-    res.json(turmas);
-  } catch (erro) {
-    res.status(500).json({ mensagem: erro.message });
+    res.status(200).json(turmas);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar turmas', error });
   }
 };
 
-exports.obterTurma = async (req, res) => {
+const obterTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id)
       .populate('disciplina', 'nome')
       .populate('professor', 'nome')
       .populate('alunos', 'nome');
     if (!turma) {
-      return res.status(404).json({ mensagem: 'Turma não encontrada' });
+      return res.status(404).json({ message: 'Turma não encontrada' });
     }
     res.json(turma);
-  } catch (erro) {
-    res.status(500).json({ mensagem: erro.message });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao pesquisar turma', error });
   }
 };
 
-exports.atualizarTurma = async (req, res) => {
+const atualizarTurma = async (req, res) => {
   try {
-    const turmaAtualizada = await Turma.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!turmaAtualizada) {
-      return res.status(404).json({ mensagem: 'Turma não encontrada' });
+    const {
+      disciplina,
+      professor,
+      alunos,
+      ano,
+      semestre
+    } = req.body;
+    const turma = await Turma.findById(req.params.id);
+    if (!turma) {
+      return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    res.json(turmaAtualizada);
-  } catch (erro) {
-    res.status(400).json({ mensagem: erro.message });
+    if (disciplina) turma.disciplina = disciplina;
+    if (professor) turma.professor = professor;
+    if (alunos) turma.alunos = alunos;
+    if (ano) turma.ano = ano;
+    if (semestre) turma.semestre = semestre;
+    await turma.save();
+
+    res.status(200).json({ message: 'Turma atualizada com sucesso', turma });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar turma', error });
   }
 };
 
-exports.excluirTurma = async (req, res) => {
-  try {
-    const turmaExcluida = await Turma.findByIdAndDelete(req.params.id);
-    if (!turmaExcluida) {
-      return res.status(404).json({ mensagem: 'Turma não encontrada' });
-    }
-    res.json({ mensagem: 'Turma excluída com sucesso' });
-  } catch (erro) {
-    res.status(500).json({ mensagem: erro.message });
-  }
-};
-
-exports.adicionarAluno = async (req, res) => {
+const excluirTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id);
     if (!turma) {
-      return res.status(404).json({ mensagem: 'Turma não encontrada' });
+      return res.status(404).json({ message: 'Turma não encontrada' });
+    }
+    await Turma.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Turma deletada com sucesso' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao deletar turma', error });
+  }
+};
+
+const adicionarAluno = async (req, res) => {
+  try {
+    const turma = await Turma.findById(req.params.id);
+    if (!turma) {
+      return res.status(404).json({ message: 'Turma não encontrada' });
     }
     if (turma.alunos.length >= turma.capacidadeMaxima) {
-      return res.status(400).json({ mensagem: 'A turma já atingiu a capacidade máxima' });
+      return res.status(400).json({ message: 'A turma já atingiu a capacidade máxima' });
     }
     turma.alunos.push(req.body.alunoId);
     await turma.save();
-    res.json(turma);
-  } catch (erro) {
-    res.status(400).json({ mensagem: erro.message });
+    res.status(200).json({ message: 'Aluno adicionado com sucesso', turma });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao adicionar aluno', error });
   }
 };
 
-exports.removerAluno = async (req, res) => {
+const removerAluno = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id);
     if (!turma) {
-      return res.status(404).json({ mensagem: 'Turma não encontrada' });
+      return res.status(404).json({ message: 'Turma não encontrada' });
     }
     turma.alunos = turma.alunos.filter(aluno => aluno.toString() !== req.body.alunoId);
     await turma.save();
-    res.json(turma);
-  } catch (erro) {
-    res.status(400).json({ mensagem: erro.message });
+    res.status(200).json({ message: 'Aluno removido com sucesso', turma });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao adicionar aluno', error });
   }
+};
+
+module.exports = {
+  criarTurma,
+  listarTurmas,
+  obterTurma,
+  atualizarTurma,
+  excluirTurma,
+  adicionarAluno,
+  removerAluno
 };
