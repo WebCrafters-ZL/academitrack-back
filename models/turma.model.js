@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
 const turmaSchema = new mongoose.Schema({
-  disciplina: {
+  disciplina_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Disciplina',
     required: true
   },
-  professor: {
+  professor_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Professor',
     required: true
   },
-  alunos: [{
+  alunos_id: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Aluno'
   }],

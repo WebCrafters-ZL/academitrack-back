@@ -31,9 +31,9 @@ const criarTurma = async (req, res) => {
 const listarTurmas = async (req, res) => {
   try {
     const turmas = await Turma.find()
-      .populate('disciplina', 'nome')
-      .populate('professor', 'nomeCompleto')
-      .populate('aluno', 'nomeCompleto');
+      .populate('disciplina_id', 'nome')
+      .populate('professor_id', 'nomeCompleto')
+      .populate('alunos_id', 'nomeCompleto');
     const turmasDetalhadas = turmas.map(turma => { 
       return {
         id: turma._id,
@@ -53,9 +53,9 @@ const listarTurmas = async (req, res) => {
 const obterTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id)
-      .populate('disciplina', 'nome')
-      .populate('professor', 'nomeCompleto')
-      .populate('aluno', 'nomeCompleto');
+    .populate('disciplina_id', 'nome')
+    .populate('professor_id', 'nomeCompleto')
+    .populate('alunos_id', 'nomeCompleto');
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
