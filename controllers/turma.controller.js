@@ -39,7 +39,7 @@ const listarTurmas = async (req, res) => {
         id: turma._id,
         disciplina: turma.disciplina.nome,
         professor: turma.professor.nomeCompleto,
-        alunos: turma.alunos.map(aluno => aluno.nomeCompleto),
+        alunos: turma.alunos.map(alunos => alunos.nomeCompleto),
         ano: turma.ano,
         semestre: turma.semestre
       };
@@ -64,7 +64,7 @@ const obterTurma = async (req, res) => {
         id: turma._id,
         disciplina: turma.disciplina.nome,
         professor: turma.professor.nomeCompleto,
-        alunos: turma.alunos.map(aluno => aluno.nomeCompleto),
+        alunos: turma.alunos.map(alunos => alunos.nomeCompleto),
         ano: turma.ano,
         semestre: turma.semestre
       };
