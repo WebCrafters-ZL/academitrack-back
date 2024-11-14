@@ -32,14 +32,14 @@ const listarTurmas = async (req, res) => {
   try {
     const turmas = await Turma.find()
       .populate('disciplina', 'nome')
-      .populate('professor', 'nome')
-      .populate('alunos', 'nome');
+      .populate('professor', 'nomeCompleto')
+      .populate('aluno', 'nomeCompleto');
     const turmasDetalhadas = turmas.map(turma => { 
       return {
         id: turma._id,
         disciplina: turma.disciplina.nome,
-        professor: turma.professor.nome,
-        alunos: turma.alunos.map(aluno => aluno.nome),
+        professor: turma.professor.nomeCompleto,
+        alunos: turma.alunos.map(aluno => aluno.nomeCompleto),
         ano: turma.ano,
         semestre: turma.semestre
       };
@@ -54,8 +54,8 @@ const obterTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id)
       .populate('disciplina', 'nome')
-      .populate('professor', 'nome')
-      .populate('alunos', 'nome');
+      .populate('professor', 'nomeCompleto')
+      .populate('aluno', 'nomeCompleto');
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
@@ -63,8 +63,8 @@ const obterTurma = async (req, res) => {
       return {
         id: turma._id,
         disciplina: turma.disciplina.nome,
-        professor: turma.professor.nome,
-        alunos: turma.alunos.map(aluno => aluno.nome),
+        professor: turma.professor.nomeCompleto,
+        alunos: turma.alunos.map(aluno => aluno.nomeCompleto),
         ano: turma.ano,
         semestre: turma.semestre
       };
