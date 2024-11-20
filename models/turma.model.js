@@ -29,7 +29,10 @@ const turmaSchema = new mongoose.Schema({
     default: 40
   }
 }, {
-  timestamps: true
+  timestamps: {
+      createdAt: 'criadoEm',
+      updatedAt: 'atualizadoEm'
+  }
 });
 
 // Middleware para validar o número máximo de alunos
