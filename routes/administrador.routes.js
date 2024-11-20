@@ -1,4 +1,5 @@
 const express = require('express');
+const administradorController = require('../controllers/administrador.controller');
 const alunoController = require('../controllers/aluno.controller');
 const professorController = require('../controllers/professor.controller');
 const cursoController = require('../controllers/curso.controller');
@@ -6,6 +7,10 @@ const disciplinaController = require('../controllers/disciplina.controller');
 const turmaController = require('../controllers/turma.controller');
 const { isLoggedIn, isAdmin } = require('../middlewares/auth.middleware');
 const router = express.Router();
+
+// Rotas para gerenciamento de administradores
+router.get('/perfil', isLoggedIn, isAdmin, administradorController.pesquisarAdministrador);
+router.put('/perfil', isLoggedIn, isAdmin, administradorController.atualizarAdministrador);
 
 // Rotas para gerenciamento de alunos
 router.get('/alunos/:id', isLoggedIn, isAdmin, alunoController.pesquisarAluno);
