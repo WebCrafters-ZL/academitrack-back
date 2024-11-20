@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -7,7 +6,6 @@ const cors = require('cors');
 const { connectDB } = require('./config/db');
 const routes = require('./routes');
 const rateLimit = require('./config/rateLimit');  // Importando o rate limit de config
-require('dotenv').config();
 
 const app = express();
 
