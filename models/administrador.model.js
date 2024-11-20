@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { validarCPF } = require('../helpers/validadores');
+const { validarCPF } = require('../helpers/validarCpf.helper');
 
 const administradorSchema = new mongoose.Schema({
   nomeCompleto: {
