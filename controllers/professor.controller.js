@@ -60,16 +60,18 @@ const cadastrarProfessor = async (req, res) => {
 const listarProfessores = async (req, res) => {
     try {
         const professores = await Professor.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
-        
+
         // Mapeia os dados dos professores para incluir as informações desejadas
         const professoresComEmail = professores.map(professor => ({
             _id: professor._id,
-            nomeCompleto: professor.nomeCompleto, // Certifique-se de que esse campo existe no seu modelo Professor
-            email: professor.usuario_id.email, // Inclui o email do usuário associado
-            cpf: professor.cpf, // Inclua mais campos conforme necessário
-            telefone: professor.telefone, // Inclua mais campos conforme necessário
-            status: professor.status, // Inclua mais campos conforme necessário
-            disciplina: professor.disciplina, // Exemplo de outro campo que você poderia incluir
+            nomeCompleto: professor.nomeCompleto,
+            email: professor.usuario_id.email,
+            cpf: professor.cpf,
+            dataNascimento: professor.dataNascimento,
+            formacaoAcademica: professor.formacaoAcademica,
+            especialidade: professor.especialidade,
+            matricula: professor.matricula,
+            status: professor.status
         }));
 
         res.status(200).json(professoresComEmail); // Retorna os dados manipulados
@@ -88,15 +90,17 @@ const pesquisarProfessor = async (req, res) => {
             return res.status(404).json({ message: 'Professor não encontrado' });
         }
         // Mapeia os dados dos professores para incluir as informações desejadas
-        const professorComEmail = professor.map(professor => ({
+        const professorComEmail = {
             _id: professor._id,
-            nomeCompleto: professor.nomeCompleto, // Certifique-se de que esse campo existe no seu modelo Professor
-            email: professor.usuario_id.email, // Inclui o email do usuário associado
-            cpf: professor.cpf, // Inclua mais campos conforme necessário
-            telefone: professor.telefone, // Inclua mais campos conforme necessário
-            status: professor.status, // Inclua mais campos conforme necessário
-            disciplina: professor.disciplina, // Exemplo de outro campo que você poderia incluir
-        }));
+            nomeCompleto: professor.nomeCompleto,
+            email: professor.usuario_id.email,
+            cpf: professor.cpf,
+            dataNascimento: professor.dataNascimento,
+            formacaoAcademica: professor.formacaoAcademica,
+            especialidade: professor.especialidade,
+            matricula: professor.matricula,
+            status: professor.status
+        };
 
         res.status(200).json(professorComEmail);
     } catch (error) {
