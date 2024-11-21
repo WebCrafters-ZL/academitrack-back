@@ -85,11 +85,11 @@ const listarProfessores = async (req, res) => {
 // Pesquisar professor por ID
 const pesquisarProfessor = async (req, res) => {
     try {
-        const professor = await Professor.findById(req.params.id).populate('usuario_id');
+        const professor = await Professor.findById(req.params.id).populate('usuario_id', 'email');
         if (!professor) {
             return res.status(404).json({ message: 'Professor não encontrado' });
         }
-        // Mapeia os dados dos professores para incluir as informações desejadas
+        
         const professorComEmail = {
             _id: professor._id,
             nomeCompleto: professor.nomeCompleto,
