@@ -22,8 +22,15 @@ const cadastrarDisciplina = async (req, res) => {
 
 const listarDisciplinas = async (req, res) => {
     try {
-        const disciplinas = await Disciplina.find().populate('curso_id');
-        return res.status(200).json(disciplinas);
+        const disciplinas = await Disciplina.find().populate('curso_id', 'nome');
+        const disciplinasComCurso = disciplinas.map(disciplina => ({
+            _id: disciplina._id,
+            nome: disciplina.nome,
+            descricao: disciplina.descricao,
+            cargaHoraria: disciplina.cargaHoraria,
+            curso: disciplina.curso_id.nome
+        }));
+        return res.status(200).json(disciplinasComCurso);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Erro ao listar disciplinas', error });
@@ -32,11 +39,18 @@ const listarDisciplinas = async (req, res) => {
 
 const pesquisarDisciplina = async (req, res) => {
     try {
-        const disciplina = await Disciplina.findById(req.params.id).populate('curso_id');
+        const disciplina = await Disciplina.findById(req.params.id).populate('curso_id', 'nome');
         if (!disciplina) {
             return res.status(404).json({ message: 'Disciplina não encontrada' });
         }
-        return res.status(200).json(disciplina);
+        const disciplinaComCurso = {
+            _id: disciplina._id,
+            nome: disciplina.nome,
+            descricao: disciplina.descricao,
+            cargaHoraria: disciplina.cargaHoraria,
+            curso: disciplina.curso_id.nome
+        };
+        return res.status(200).json(disciplinaComCurso);
     } catch (error) {
         return res.status(500).json({ message: 'Erro ao pesquisar disciplina', error });
     }
