@@ -3,30 +3,34 @@ const Turma = require('../models/turma.model');
 const criarTurma = async (req, res) => {
   try {
     const {
-      disciplina,
-      professor,
-      alunos,
+      disciplina_id,
+      professor_id,
+      alunos_id,
       ano,
       semestre
     } = req.body;
-    if (!disciplina || !professor || !ano || !alunos || !ano || !semestre) {
+
+    // Validação dos campos obrigatórios
+    if (!disciplina_id || !professor_id || !ano || !semestre || !alunos_id) {
       return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos' });
     }
-    const novaTurma = new Turma(
-      {
-        disciplina,
-        professor,
-        alunos,
-        ano,
-        semestre
-      }
-    );
+
+    const novaTurma = new Turma({
+      disciplina_id,
+      professor_id,
+      alunos_id,
+      ano: Number(ano),      // Converte para número
+      semestre: Number(semestre)  // Converte para número
+    });
+
     await novaTurma.save();
     res.status(201).json({ message: 'Turma criada com sucesso', turma: novaTurma });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error); // Adicione para debugar
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 const listarTurmas = async (req, res) => {
   try {

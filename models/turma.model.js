@@ -37,7 +37,7 @@ const turmaSchema = new mongoose.Schema({
 
 // Middleware para validar o número máximo de alunos
 turmaSchema.pre('save', function(next) {
-  if (this.alunos.length > this.capacidadeMaxima) {
+  if (this.alunos_id.length > this.capacidadeMaxima) {
     const erro = new Error(`A turma excedeu a capacidade máxima de ${this.capacidadeMaxima} alunos.`);
     return next(erro);
   }

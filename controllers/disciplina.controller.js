@@ -28,6 +28,7 @@ const listarDisciplinas = async (req, res) => {
             nome: disciplina.nome,
             descricao: disciplina.descricao,
             cargaHoraria: disciplina.cargaHoraria,
+            status: disciplina.status,
             curso: disciplina.curso_id.nome
         }));
         return res.status(200).json(disciplinasComCurso);
@@ -48,10 +49,12 @@ const pesquisarDisciplina = async (req, res) => {
             nome: disciplina.nome,
             descricao: disciplina.descricao,
             cargaHoraria: disciplina.cargaHoraria,
+            status: disciplina.status,
             curso: disciplina.curso_id.nome
         };
         return res.status(200).json(disciplinaComCurso);
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Erro ao pesquisar disciplina', error });
     }
 };
@@ -81,8 +84,9 @@ const excluirDisciplina = async (req, res) => {
         if (!disciplina) {
             return res.status(404).json({ message: 'Disciplina não encontrada' });
         }
-        await disciplina.remove();
-        return res.status(204).end();
+        await Disciplina.findByIdAndDelete(req.params.id);
+
+        return res.status(200).json({ message: "Disciplina excluído com sucesso" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Erro ao excluir disciplina', error });
