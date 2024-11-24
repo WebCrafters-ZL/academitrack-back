@@ -39,7 +39,7 @@ const listarTurmas = async (req, res) => {
       .populate('professor_id', 'nomeCompleto')
       .populate('alunos_id', 'nomeCompleto');
     const turmasDetalhadas = turmas.map(turma => ({
-      id: turma._id,
+      _id: turma._id,
       disciplina: turma.disciplina_id.nome,
       professor: turma.professor_id.nomeCompleto,
       alunos: turma.alunos_id.map(aluno => aluno.nomeCompleto),
@@ -63,7 +63,7 @@ const obterTurma = async (req, res) => {
     }
     const turmaDetalhada = turma.map(turma => {
       return {
-        id: turma._id,
+        _id: turma._id,
         disciplina: turma.disciplina.nome,
         professor: turma.professor.nomeCompleto,
         alunos: turma.alunos.map(alunos => alunos.nomeCompleto),
