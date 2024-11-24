@@ -3,17 +3,17 @@ const Turma = require('../models/turma.model');
 const criarTurma = async (req, res) => {
   try {
     const {
-      disciplina_id,
-      professor_id,
-      alunos_id,
+      disciplina: disciplina_id,
+      professor: professor_id,
+      alunos: alunos_id,
       ano,
       semestre
     } = req.body;
 
     // Validação dos campos obrigatórios
-    if (!disciplina_id || !professor_id || !ano || !semestre || !alunos_id) {
+    if (!disciplina_id || !professor_id || !ano || !semestre || !alunos_id || alunos_id.length === 0) {
       return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos' });
-    }
+    }    
 
     const novaTurma = new Turma({
       disciplina_id,
@@ -38,16 +38,14 @@ const listarTurmas = async (req, res) => {
       .populate('disciplina_id', 'nome')
       .populate('professor_id', 'nomeCompleto')
       .populate('alunos_id', 'nomeCompleto');
-    const turmasDetalhadas = turmas.map(turma => { 
-      return {
-        id: turma._id,
-        disciplina: turma.disciplina.nome,
-        professor: turma.professor.nomeCompleto,
-        alunos: turma.alunos.map(alunos => alunos.nomeCompleto),
-        ano: turma.ano,
-        semestre: turma.semestre
-      };
-    });
+    const turmasDetalhadas = turmas.map(turma => ({
+      id: turma._id,
+      disciplina: turma.disciplina_id.nome,
+      professor: turma.professor_id.nomeCompleto,
+      alunos: turma.alunos_id.map(aluno => aluno.nomeCompleto),
+      ano: turma.ano,
+      semestre: turma.semestre
+    }));
     res.status(200).json(turmasDetalhadas);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao listar turmas', error });
@@ -57,13 +55,13 @@ const listarTurmas = async (req, res) => {
 const obterTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id)
-    .populate('disciplina_id', 'nome')
-    .populate('professor_id', 'nomeCompleto')
-    .populate('alunos_id', 'nomeCompleto');
+      .populate('disciplina_id', 'nome')
+      .populate('professor_id', 'nomeCompleto')
+      .populate('alunos_id', 'nomeCompleto');
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    const turmaDetalhada = turma.map(turma => { 
+    const turmaDetalhada = turma.map(turma => {
       return {
         id: turma._id,
         disciplina: turma.disciplina.nome,
