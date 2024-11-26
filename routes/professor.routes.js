@@ -1,10 +1,10 @@
 const express = require('express');
 const professorController = require('../controllers/professor.controller');
-const { isLoggedIn } = require('../middlewares/auth.middleware');
+const { isLoggedIn, isProfessor } = require('../middlewares/auth.middleware');
 const router = express.Router();
-const authMiddleware = require('../middlewares/authMiddleware');
-router.use(authMiddleware(['professor']));
 
-router.get('/perfil', isLoggedIn, professorController.pesquisarProfessorPorIdToken);
+
+router.get('/perfil', isLoggedIn, isProfessor, professorController.pesquisarProfessorPorIdToken);
+router.put('/perfil', isLoggedIn, isProfessor, professorController.atualizarProfessor);
 
 module.exports = router;

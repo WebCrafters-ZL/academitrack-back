@@ -138,6 +138,7 @@ const pesquisarProfessorPorIdToken = async (req, res) => {
             nomeCompleto: professor.nomeCompleto,
             matricula: professor.matricula,
             email: professor.usuario_id.email,
+            cpf: professor.cpf,
             status: professor.status
         };
         res.status(200).json(professorComEmail);
@@ -149,8 +150,15 @@ const pesquisarProfessorPorIdToken = async (req, res) => {
 // Atualizar professor
 const atualizarProfessor = async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
+        const usuarioId = getUsuarioIdFromToken(token); // Obtém o usuarioId do token
+
+        if (!usuarioId) {
+            return res.status(401).json({ message: 'Token inválido' });
+        }
+
         const { nomeCompleto, email, senha, cpf, dataNascimento, formacaoAcademica, especialidade, matricula } = req.body;
-        const professor = await Professor.findById(req.params.id);
+        const professor = await Professor.findOne({ usuario_id: usuarioId }); // Usa o usuarioId para buscar o professor
 
         if (!professor) {
             return res.status(404).json({ message: 'Professor não encontrado' });
