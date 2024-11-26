@@ -1,20 +1,10 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken'); // Importa a biblioteca jsonwebtoken
+const obterUsuarioIdDoToken = require('../helpers/obterUsuarioIdDoToken.helper');
 const Professor = require('../models/professor.model');
 const Usuario = require('../models/usuario.model');
 
-// Função para obter o usuarioId do token
-const getUsuarioIdFromToken = (token) => {
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verifica e decodifica o token
-        return decoded.usuarioId; // Retorna o usuarioId do payload
-    } catch (error) {
-        return null; // Retorna null se o token não for válido
-    }
-};
-
 // Cadastrar professor
-const cadastrarProfessor = async (req, res) => {
+exports.cadastrarProfessor = async (req, res) => {
     try {
         const {
             nomeCompleto,
@@ -68,7 +58,7 @@ const cadastrarProfessor = async (req, res) => {
 };
 
 // Listar todos os professores
-const listarProfessores = async (req, res) => {
+exports.listarProfessores = async (req, res) => {
     try {
         const professores = await Professor.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
 
@@ -92,9 +82,8 @@ const listarProfessores = async (req, res) => {
     }
 };
 
-
 // Pesquisar professor por ID
-const pesquisarProfessor = async (req, res) => {
+exports.pesquisarProfessor = async (req, res) => {
     try {
         const professor = await Professor.findById(req.params.id).populate('usuario_id', 'email');
         if (!professor) {
@@ -120,10 +109,10 @@ const pesquisarProfessor = async (req, res) => {
 };
 
 // Pesquisar professor por ID
-const pesquisarProfessorPorIdToken = async (req, res) => {
+exports.obterPerfilProfessor = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
-        const usuarioId = getUsuarioIdFromToken(token); // Obtém o usuarioId do token
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
 
         if (!usuarioId) {
             return res.status(401).json({ message: 'Token inválido' });
@@ -148,15 +137,8 @@ const pesquisarProfessorPorIdToken = async (req, res) => {
 };
 
 // Atualizar professor
-const atualizarProfessor = async (req, res) => {
+exports.atualizarProfessor = async (req, res) => {
     try {
-        const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
-        const usuarioId = getUsuarioIdFromToken(token); // Obtém o usuarioId do token
-
-        if (!usuarioId) {
-            return res.status(401).json({ message: 'Token inválido' });
-        }
-
         const { nomeCompleto, email, senha, cpf, dataNascimento, formacaoAcademica, especialidade, matricula } = req.body;
         const professor = await Professor.findOne({ usuario_id: usuarioId }); // Usa o usuarioId para buscar o professor
 
@@ -186,8 +168,41 @@ const atualizarProfessor = async (req, res) => {
     }
 };
 
+exports.atualizarPerfilProfessor = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
+
+        if (!usuarioId) {
+            return res.status(401).json({ message: 'Token inválido' });
+        }
+
+        const { nomeCompleto, email, senha, cpf } = req.body;
+        const professor = await Professor.findOne({ usuario_id: usuarioId }); // Usa o usuarioId para buscar o professor
+
+        if (!professor) {
+            return res.status(404).json({ message: 'Professor não encontrado' });
+        }
+
+        // Atualiza os dados do usuário
+        const usuario = await Usuario.findById(professor.usuario_id);
+        if (email) usuario.email = email;
+        if (senha) usuario.senha = await bcrypt.hash(senha, 10);
+        await usuario.save();
+
+        // Atualiza os dados do professor
+        if (nomeCompleto) professor.nomeCompleto = nomeCompleto;
+        if (cpf) professor.cpf = cpf;
+        await professor.save();
+
+        res.status(200).json({ message: 'Professor atualizado com sucesso' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar professor', error });
+    }
+};
+
 // Deletar professor
-const deletarProfessor = async (req, res) => {
+exports.deletarProfessor = async (req, res) => {
     try {
         const professor = await Professor.findById(req.params.id);
 
@@ -206,13 +221,4 @@ const deletarProfessor = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Erro ao deletar professor', error });
     }
-};
-
-module.exports = {
-    cadastrarProfessor,
-    listarProfessores,
-    pesquisarProfessor,
-    pesquisarProfessorPorIdToken,
-    atualizarProfessor,
-    deletarProfessor
 };
