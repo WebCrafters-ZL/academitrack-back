@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const obterUsuarioIdDoToken = require('../helpers/obterUsuarioIdDoToken.helper');
+const { obterUsuarioIdDoToken } = require('../helpers/obterUsuarioIdDoToken.helper');
 const Professor = require('../models/professor.model');
 const Usuario = require('../models/usuario.model');
 

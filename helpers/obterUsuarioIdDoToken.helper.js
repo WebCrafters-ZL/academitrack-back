@@ -10,4 +10,4 @@ function obterUsuarioIdDoToken(token) {
     }
 };
 
-module.exports = obterUsuarioIdDoToken; // Exporta a função para ser usada em outros arquivos
+module.exports = { obterUsuarioIdDoToken }; // Exporta a função para ser usada em outros arquivos
