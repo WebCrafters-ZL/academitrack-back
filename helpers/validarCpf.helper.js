@@ -19,4 +19,4 @@ function validarCPF(cpf) {
     return dv11 == dv21 && dv12 == dv22;
 }
 
-module.exports = { validarCPF };
+module.exports = validarCPF; // Exporta a função para ser usada em outros arquivos

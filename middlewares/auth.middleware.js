@@ -27,15 +27,6 @@ exports.isAdmin = (req, res, next) => {
   }
 };
 
-exports.isProfessor = (req, res, next) => {
-  if (req.usuario && req.usuario.tipo === 'professor') {
-    next();
-  } else {
-    res.status(403).json({ error: 'Acesso negado, permissões insuficientes.' });
-  }
-};
-
-// Função auxiliar para verificar tipos de usuário específicos
 exports.hasRole = (roles) => {
   return (req, res, next) => {
     if (req.usuario && roles.includes(req.usuario.tipo)) {
