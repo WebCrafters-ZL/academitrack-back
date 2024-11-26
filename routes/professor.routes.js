@@ -1,10 +1,9 @@
 const express = require('express');
 const professorController = require('../controllers/professor.controller');
-const { isLoggedIn, isProfessor } = require('../middlewares/auth.middleware');
+const { isLoggedIn, hasRole } = require('../middlewares/auth.middleware');
 const router = express.Router();
 
-
-router.get('/perfil', isLoggedIn, isProfessor, professorController.pesquisarProfessorPorIdToken);
-router.put('/perfil', isLoggedIn, isProfessor, professorController.atualizarProfessor);
+router.get('/perfil', isLoggedIn, hasRole("professor"), professorController.obterPerfilProfessor);
+router.put('/perfil', isLoggedIn, hasRole("professor"), professorController.atualizarPerfilProfessor);
 
 module.exports = router;
