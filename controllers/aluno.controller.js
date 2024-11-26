@@ -3,7 +3,7 @@ const obterUsuarioIdDoToken = require('../helpers/obterUsuarioIdDoToken.helper')
 const Aluno = require('../models/aluno.model');
 const Usuario = require('../models/usuario.model');
 
-exports.cadastrarAluno = async (req, res) => {
+const cadastrarAluno = async (req, res) => {
     try {
         const {
             nomeCompleto,
@@ -54,7 +54,7 @@ exports.cadastrarAluno = async (req, res) => {
 };
 
 // Listar todos os alunos
-exports.listarAlunos = async (req, res) => {
+const listarAlunos = async (req, res) => {
     try {
         const alunos = await Aluno.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
         
@@ -77,7 +77,7 @@ exports.listarAlunos = async (req, res) => {
 };
 
 // Pesquisar aluno por ID
-exports.pesquisarAluno = async (req, res) => {
+const pesquisarAluno = async (req, res) => {
     try {
         const aluno = await Aluno.findById(req.params.id).populate('usuario_id', 'email'); // Popula apenas o campo 'email'
         if (!aluno) {
@@ -101,7 +101,7 @@ exports.pesquisarAluno = async (req, res) => {
 };
 
 // Pesquisar aluno por ID
-exports.obterPerfilAluno = async (req, res) => {
+const obterPerfilAluno = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -129,7 +129,7 @@ exports.obterPerfilAluno = async (req, res) => {
 };
 
 // Atualizar aluno
-exports.atualizarAluno = async (req, res) => {
+const atualizarAluno = async (req, res) => {
     try {
         const { nomeCompleto, email, senha, cpf, dataNascimento, telefone, endereco, matricula } = req.body;
         const aluno = await Aluno.findById(req.params.id);
@@ -160,7 +160,7 @@ exports.atualizarAluno = async (req, res) => {
     }
 };
 
-exports.atualizarPerfilAluno = async (req, res) => {
+const atualizarPerfilAluno = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -194,7 +194,7 @@ exports.atualizarPerfilAluno = async (req, res) => {
 };
 
 // Deletar aluno
-exports.deletarAluno = async (req, res) => {
+const deletarAluno = async (req, res) => {
     try {
         const aluno = await Aluno.findById(req.params.id);
 
@@ -213,4 +213,14 @@ exports.deletarAluno = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Erro ao deletar aluno', error });
     }
+};
+
+module.exports = {
+    cadastrarAluno,
+    listarAlunos,
+    pesquisarAluno,
+    obterPerfilAluno,
+    atualizarAluno,
+    atualizarPerfilAluno,
+    deletarAluno
 };

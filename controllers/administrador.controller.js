@@ -4,7 +4,7 @@ const Administrador = require('../models/administrador.model');
 const Usuario = require('../models/usuario.model');
 
 // Pesquisar administrador por ID
-exports.obterPerfilAdministrador = async (req, res) => {
+const obterPerfilAdministrador = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -31,7 +31,7 @@ exports.obterPerfilAdministrador = async (req, res) => {
 };
 
 // Atualizar administrador
-exports.atualizarPerfilAdministrador = async (req, res) => {
+const atualizarPerfilAdministrador = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -62,4 +62,9 @@ exports.atualizarPerfilAdministrador = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar administrador', error });
     }
+};
+
+module.exports = {
+    obterPerfilAdministrador,
+    atualizarPerfilAdministrador
 };
