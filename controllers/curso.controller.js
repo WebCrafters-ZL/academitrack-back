@@ -1,6 +1,6 @@
 const Curso = require("../models/curso.model");
 
-const cadastrarCurso = async (req, res) => {
+exports.cadastrarCurso = async (req, res) => {
   try {
     const { nome, codigo, descricao, cargaHoraria, categoria } = req.body;
     if (!nome || !descricao || !cargaHoraria || !categoria) {
@@ -23,7 +23,7 @@ const cadastrarCurso = async (req, res) => {
   }
 };
 
-const listarCursos = async (req, res) => {
+exports.listarCursos = async (req, res) => {
   try {
     const cursos = await Curso.find();
     return res.status(200).json(cursos);
@@ -33,7 +33,7 @@ const listarCursos = async (req, res) => {
   }
 };
 
-const pesquisarCurso = async (req, res) => {
+exports.pesquisarCurso = async (req, res) => {
   try {
     const curso = await Curso.findById(req.params.id);
     if (!curso) {
@@ -45,7 +45,7 @@ const pesquisarCurso = async (req, res) => {
   }
 };
 
-const atualizarCurso = async (req, res) => {
+exports.atualizarCurso = async (req, res) => {
   try {
     const { nome, codigo, descricao, cargaHoraria, categoria } = req.body;
     const curso = await Curso.findById(req.params.id);
@@ -65,7 +65,7 @@ const atualizarCurso = async (req, res) => {
   }
 };
 
-const excluirCurso = async (req, res) => {
+exports.excluirCurso = async (req, res) => {
   try {
     const curso = await Curso.findById(req.params.id);
     if (!curso) {
@@ -80,12 +80,4 @@ const excluirCurso = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: "Erro ao excluir curso", error });
   }
-};
-
-module.exports = {
-  cadastrarCurso,
-  listarCursos,
-  pesquisarCurso,
-  atualizarCurso,
-  excluirCurso,
 };

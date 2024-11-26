@@ -1,6 +1,6 @@
 const Turma = require('../models/turma.model');
 
-const criarTurma = async (req, res) => {
+exports.criarTurma = async (req, res) => {
   try {
     const {
       disciplina: disciplina_id,
@@ -32,7 +32,7 @@ const criarTurma = async (req, res) => {
 };
 
 
-const listarTurmas = async (req, res) => {
+exports.listarTurmas = async (req, res) => {
   try {
     const turmas = await Turma.find()
       .populate('disciplina_id', 'nome')
@@ -52,7 +52,7 @@ const listarTurmas = async (req, res) => {
   }
 };
 
-const obterTurma = async (req, res) => {
+exports.obterTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id)
       .populate('disciplina_id', 'nome')
@@ -77,7 +77,7 @@ const obterTurma = async (req, res) => {
   }
 };
 
-const atualizarTurma = async (req, res) => {
+exports.atualizarTurma = async (req, res) => {
   try {
     const {
       disciplina,
@@ -104,7 +104,7 @@ const atualizarTurma = async (req, res) => {
   }
 };
 
-const excluirTurma = async (req, res) => {
+exports.excluirTurma = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id);
     if (!turma) {
@@ -117,7 +117,7 @@ const excluirTurma = async (req, res) => {
   }
 };
 
-const adicionarAluno = async (req, res) => {
+exports.adicionarAluno = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id);
     if (!turma) {
@@ -134,7 +134,7 @@ const adicionarAluno = async (req, res) => {
   }
 };
 
-const removerAluno = async (req, res) => {
+exports.removerAluno = async (req, res) => {
   try {
     const turma = await Turma.findById(req.params.id);
     if (!turma) {
@@ -146,14 +146,4 @@ const removerAluno = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Erro ao adicionar aluno', error });
   }
-};
-
-module.exports = {
-  criarTurma,
-  listarTurmas,
-  obterTurma,
-  atualizarTurma,
-  excluirTurma,
-  adicionarAluno,
-  removerAluno
 };

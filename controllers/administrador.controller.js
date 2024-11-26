@@ -1,23 +1,13 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken'); // Importa a biblioteca jsonwebtoken
+const obterUsuarioIdDoToken = require('../helpers/obterUsuarioIdDoToken.helper');
 const Administrador = require('../models/administrador.model');
 const Usuario = require('../models/usuario.model');
 
-// Função para obter o usuarioId do token
-const getUsuarioIdFromToken = (token) => {
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verifica e decodifica o token
-        return decoded.usuarioId; // Retorna o usuarioId do payload
-    } catch (error) {
-        return null; // Retorna null se o token não for válido
-    }
-};
-
 // Pesquisar administrador por ID
-const pesquisarAdministrador = async (req, res) => {
+exports.obterPerfilAdministrador = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
-        const usuarioId = getUsuarioIdFromToken(token); // Obtém o usuarioId do token
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
 
         if (!usuarioId) {
             return res.status(401).json({ message: 'Token inválido' });
@@ -41,10 +31,10 @@ const pesquisarAdministrador = async (req, res) => {
 };
 
 // Atualizar administrador
-const atualizarAdministrador = async (req, res) => {
+exports.atualizarPerfilAdministrador = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
-        const usuarioId = getUsuarioIdFromToken(token); // Obtém o usuarioId do token
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
 
         if (!usuarioId) {
             return res.status(401).json({ message: 'Token inválido' });
@@ -72,9 +62,4 @@ const atualizarAdministrador = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar administrador', error });
     }
-};
-
-module.exports = {
-    pesquisarAdministrador,
-    atualizarAdministrador
 };
