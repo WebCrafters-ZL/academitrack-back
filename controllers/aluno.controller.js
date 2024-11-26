@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
+const obterUsuarioIdDoToken = require('../helpers/obterUsuarioIdDoToken.helper');
 const Aluno = require('../models/aluno.model');
 const Usuario = require('../models/usuario.model');
 
-// Cadastrar aluno
-const cadastrarAluno = async (req, res) => {
+exports.cadastrarAluno = async (req, res) => {
     try {
         const {
             nomeCompleto,
@@ -54,9 +54,10 @@ const cadastrarAluno = async (req, res) => {
 };
 
 // Listar todos os alunos
-const listarAlunos = async (req, res) => {
+exports.listarAlunos = async (req, res) => {
     try {
         const alunos = await Aluno.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
+        
         const alunosComEmail = alunos.map(aluno => ({
             _id: aluno._id,
             nomeCompleto: aluno.nomeCompleto,
@@ -76,7 +77,7 @@ const listarAlunos = async (req, res) => {
 };
 
 // Pesquisar aluno por ID
-const pesquisarAluno = async (req, res) => {
+exports.pesquisarAluno = async (req, res) => {
     try {
         const aluno = await Aluno.findById(req.params.id).populate('usuario_id', 'email'); // Popula apenas o campo 'email'
         if (!aluno) {
@@ -99,8 +100,36 @@ const pesquisarAluno = async (req, res) => {
     }
 };
 
+// Pesquisar aluno por ID
+exports.obterPerfilAluno = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
+
+        if (!usuarioId) {
+            return res.status(401).json({ message: 'Token inválido' });
+        }
+
+        const aluno = await Aluno.findOne({ usuario_id: usuarioId }).populate('usuario_id', 'email'); // Usa o usuarioId para buscar o aluno
+        if (!aluno) {
+            return res.status(404).json({ message: 'Aluno não encontrado' });
+        }
+        const alunoComEmail = {
+            _id: aluno._id,
+            nomeCompleto: aluno.nomeCompleto,
+            matricula: aluno.matricula,
+            email: aluno.usuario_id.email,
+            cpf: aluno.cpf,
+            status: aluno.status
+        };
+        res.status(200).json(alunoComEmail);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao pesquisar aluno', error });
+    }
+};
+
 // Atualizar aluno
-const atualizarAluno = async (req, res) => {
+exports.atualizarAluno = async (req, res) => {
     try {
         const { nomeCompleto, email, senha, cpf, dataNascimento, telefone, endereco, matricula } = req.body;
         const aluno = await Aluno.findById(req.params.id);
@@ -131,8 +160,41 @@ const atualizarAluno = async (req, res) => {
     }
 };
 
+exports.atualizarPerfilAluno = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
+        const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
+
+        if (!usuarioId) {
+            return res.status(401).json({ message: 'Token inválido' });
+        }
+
+        const { nomeCompleto, email, senha, cpf } = req.body;
+        const aluno = await Aluno.findOne({ usuario_id: usuarioId }); // Usa o usuarioId para buscar o aluno
+
+        if (!aluno) {
+            return res.status(404).json({ message: 'Aluno não encontrado' });
+        }
+
+        // Atualiza os dados do usuário
+        const usuario = await Usuario.findById(aluno.usuario_id);
+        if (email) usuario.email = email;
+        if (senha) usuario.senha = await bcrypt.hash(senha, 10);
+        await usuario.save();
+
+        // Atualiza os dados do aluno
+        if (nomeCompleto) aluno.nomeCompleto = nomeCompleto;
+        if (cpf) aluno.cpf = cpf;
+        await aluno.save();
+
+        res.status(200).json({ message: 'Aluno atualizado com sucesso' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar aluno', error });
+    }
+};
+
 // Deletar aluno
-const deletarAluno = async (req, res) => {
+exports.deletarAluno = async (req, res) => {
     try {
         const aluno = await Aluno.findById(req.params.id);
 
@@ -151,12 +213,4 @@ const deletarAluno = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Erro ao deletar aluno', error });
     }
-};
-
-module.exports = {
-    cadastrarAluno,
-    listarAlunos,
-    pesquisarAluno,
-    atualizarAluno,
-    deletarAluno
 };
