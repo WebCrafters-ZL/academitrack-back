@@ -1,5 +1,5 @@
 const express = require('express');
-const { alunoController } = require('../controllers/aluno.controller');
+const alunoController = require('../controllers/aluno.controller');
 const { isLoggedIn, hasRole } = require('../middlewares/auth.middleware');
 const router = express.Router();
 

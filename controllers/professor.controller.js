@@ -4,7 +4,7 @@ const Professor = require('../models/professor.model');
 const Usuario = require('../models/usuario.model');
 
 // Cadastrar professor
-exports.cadastrarProfessor = async (req, res) => {
+const cadastrarProfessor = async (req, res) => {
     try {
         const {
             nomeCompleto,
@@ -58,7 +58,7 @@ exports.cadastrarProfessor = async (req, res) => {
 };
 
 // Listar todos os professores
-exports.listarProfessores = async (req, res) => {
+const listarProfessores = async (req, res) => {
     try {
         const professores = await Professor.find().populate('usuario_id', 'email'); // Popula apenas o campo 'email'
 
@@ -83,7 +83,7 @@ exports.listarProfessores = async (req, res) => {
 };
 
 // Pesquisar professor por ID
-exports.pesquisarProfessor = async (req, res) => {
+const pesquisarProfessor = async (req, res) => {
     try {
         const professor = await Professor.findById(req.params.id).populate('usuario_id', 'email');
         if (!professor) {
@@ -109,7 +109,7 @@ exports.pesquisarProfessor = async (req, res) => {
 };
 
 // Pesquisar professor por ID
-exports.obterPerfilProfessor = async (req, res) => {
+const obterPerfilProfessor = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -137,7 +137,7 @@ exports.obterPerfilProfessor = async (req, res) => {
 };
 
 // Atualizar professor
-exports.atualizarProfessor = async (req, res) => {
+const atualizarProfessor = async (req, res) => {
     try {
         const { nomeCompleto, email, senha, cpf, dataNascimento, formacaoAcademica, especialidade, matricula } = req.body;
         const professor = await Professor.findOne({ usuario_id: usuarioId }); // Usa o usuarioId para buscar o professor
@@ -168,7 +168,7 @@ exports.atualizarProfessor = async (req, res) => {
     }
 };
 
-exports.atualizarPerfilProfessor = async (req, res) => {
+const atualizarPerfilProfessor = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; // Obtém o token do cabeçalho
         const usuarioId = obterUsuarioIdDoToken(token); // Obtém o usuarioId do token
@@ -202,7 +202,7 @@ exports.atualizarPerfilProfessor = async (req, res) => {
 };
 
 // Deletar professor
-exports.deletarProfessor = async (req, res) => {
+const deletarProfessor = async (req, res) => {
     try {
         const professor = await Professor.findById(req.params.id);
 
@@ -221,4 +221,14 @@ exports.deletarProfessor = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Erro ao deletar professor', error });
     }
+};
+
+module.exports = {
+    cadastrarProfessor,
+    listarProfessores,
+    pesquisarProfessor,
+    obterPerfilProfessor,
+    atualizarProfessor,
+    atualizarPerfilProfessor,
+    deletarProfessor
 };

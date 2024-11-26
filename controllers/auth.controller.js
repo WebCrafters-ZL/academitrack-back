@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const Usuario = require('../models/usuario.model');
 const transporter = require('../config/mailer');  // Importando o transporter
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
     const { email, senha } = req.body;
 
     try {
@@ -30,12 +30,12 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.logout = (req, res) => {
+const logout = (req, res) => {
     // O logout é tratado no front-end ao remover o token
     res.json({ message: 'Logout bem-sucedido.' });
 };
 
-exports.solicitarRedefinicaoSenha = async (req, res) => {
+const solicitarRedefinicaoSenha = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -64,7 +64,7 @@ exports.solicitarRedefinicaoSenha = async (req, res) => {
     }
 };
 
-exports.redefinirSenha = async (req, res) => {
+const redefinirSenha = async (req, res) => {
     const { token } = req.params;
     const { novaSenha } = req.body;
 
@@ -87,4 +87,11 @@ exports.redefinirSenha = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor.' });
     }
+};
+
+module.exports = {
+    login,
+    logout,
+    solicitarRedefinicaoSenha,
+    redefinirSenha
 };

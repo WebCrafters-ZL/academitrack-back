@@ -1,7 +1,7 @@
 const Disciplina = require('../models/disciplina.model');
 const Curso = require('../models/curso.model');
 
-exports.cadastrarDisciplina = async (req, res) => {
+const cadastrarDisciplina = async (req, res) => {
     try {
         const { nome, descricao, cargaHoraria, curso_id } = req.body;
         if (!nome || !descricao || !cargaHoraria || !curso_id) {
@@ -20,7 +20,7 @@ exports.cadastrarDisciplina = async (req, res) => {
     }
 };
 
-exports.listarDisciplinas = async (req, res) => {
+const listarDisciplinas = async (req, res) => {
     try {
         const disciplinas = await Disciplina.find().populate('curso_id', 'nome');
         const disciplinasComCurso = disciplinas.map(disciplina => ({
@@ -38,7 +38,7 @@ exports.listarDisciplinas = async (req, res) => {
     }
 };
 
-exports.pesquisarDisciplina = async (req, res) => {
+const pesquisarDisciplina = async (req, res) => {
     try {
         const disciplina = await Disciplina.findById(req.params.id).populate('curso_id', 'nome');
         if (!disciplina) {
@@ -59,7 +59,7 @@ exports.pesquisarDisciplina = async (req, res) => {
     }
 };
 
-exports.atualizarDisciplina = async (req, res) => {
+const atualizarDisciplina = async (req, res) => {
     try {
         const { nome, descricao, cargaHoraria, curso_id } = req.body;
         const disciplina = await Disciplina.findById(req.params.id);
@@ -78,7 +78,7 @@ exports.atualizarDisciplina = async (req, res) => {
     }
 };
 
-exports.excluirDisciplina = async (req, res) => {
+const excluirDisciplina = async (req, res) => {
     try {
         const disciplina = await Disciplina.findById(req.params.id);
         if (!disciplina) {
@@ -91,4 +91,12 @@ exports.excluirDisciplina = async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Erro ao excluir disciplina', error });
     }
+};
+
+module.exports = {
+    cadastrarDisciplina,
+    listarDisciplinas,
+    pesquisarDisciplina,
+    atualizarDisciplina,
+    excluirDisciplina
 };
