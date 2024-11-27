@@ -3,22 +3,22 @@ const Turma = require('../models/turma.model');
 const criarTurma = async (req, res) => {
   try {
     const {
-      disciplina: disciplina_id,
-      professor: professor_id,
-      alunos: alunos_id,
+      disciplina,
+      professor,
+      alunos,
       ano,
       semestre
     } = req.body;
 
     // Validação dos campos obrigatórios
-    if (!disciplina_id || !professor_id || !ano || !semestre || !alunos_id || alunos_id.length === 0) {
+    if (!disciplina || !professor || !ano || !semestre || !alunos || alunos.length === 0) {
       return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos' });
-    }    
+    }
 
     const novaTurma = new Turma({
-      disciplina_id,
-      professor_id,
-      alunos_id,
+      disciplina_id: disciplina,
+      professor_id: professor,
+      alunos_id: alunos,
       ano: Number(ano),      // Converte para número
       semestre: Number(semestre)  // Converte para número
     });
@@ -38,17 +38,19 @@ const listarTurmas = async (req, res) => {
       .populate('disciplina_id', 'nome')
       .populate('professor_id', 'nomeCompleto')
       .populate('alunos_id', 'nomeCompleto');
+
     const turmasDetalhadas = turmas.map(turma => ({
       _id: turma._id,
       disciplina: turma.disciplina_id.nome,
       professor: turma.professor_id.nomeCompleto,
-      alunos: turma.alunos_id.map(aluno => aluno.nomeCompleto),
       ano: turma.ano,
       semestre: turma.semestre
     }));
+
     res.status(200).json(turmasDetalhadas);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao listar turmas', error });
+    console.error('Erro ao listar turmas:', error);
+    res.status(500).json({ message: 'Erro ao listar turmas', error: error.message });
   }
 };
 
@@ -61,17 +63,20 @@ const obterTurma = async (req, res) => {
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    const turmaDetalhada = turma.map(turma => {
-      return {
-        _id: turma._id,
-        disciplina: turma.disciplina.nome,
-        professor: turma.professor.nomeCompleto,
-        alunos: turma.alunos.map(alunos => alunos.nomeCompleto),
-        ano: turma.ano,
-        semestre: turma.semestre
-      };
-    });
-    res.json(turmaDetalhada);
+    const turmaDetalhada = {
+      _id: turma._id,
+      disciplina: turma.disciplina_id.nome,
+      professor: turma.professor_id.nomeCompleto,
+      alunos: turma.alunos_id.map(aluno => ({
+        _id: aluno._id,
+        nomeCompleto: aluno.nomeCompleto,
+        cpf: aluno.cpf,
+        matricula: aluno.matricula
+      })),
+      ano: turma.ano,
+      semestre: turma.semestre
+    };
+    res.status(200).json(turmaDetalhada);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao pesquisar turma', error });
   }
@@ -136,7 +141,7 @@ const adicionarAluno = async (req, res) => {
 
 const removerAluno = async (req, res) => {
   try {
-    const turma = await Turma.findById(req.params.id);
+    const turma = await Turma.findById(req.body);
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
