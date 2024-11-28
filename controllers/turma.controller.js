@@ -37,7 +37,6 @@ const listarTurmas = async (req, res) => {
     const turmas = await Turma.find()
       .populate('disciplina_id', 'nome')
       .populate('professor_id', 'nomeCompleto')
-      .populate('alunos_id', 'nomeCompleto');
 
     const turmasDetalhadas = turmas.map(turma => ({
       _id: turma._id,
@@ -59,7 +58,7 @@ const obterTurma = async (req, res) => {
     const turma = await Turma.findById(req.params.id)
       .populate('disciplina_id', 'nome')
       .populate('professor_id', 'nomeCompleto')
-      .populate('alunos_id', 'nomeCompleto');
+      .populate('alunos_id', '_id nomeCompleto cpf matricula');
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
@@ -128,28 +127,58 @@ const adicionarAluno = async (req, res) => {
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    if (turma.alunos.length >= turma.capacidadeMaxima) {
-      return res.status(400).json({ message: 'A turma já atingiu a capacidade máxima' });
+    
+    if (!req.body.alunoId) {
+      return res.status(400).json({ message: 'ID do aluno não fornecido' });
     }
-    turma.alunos.push(req.body.alunoId);
+
+    if (turma.alunos_id.includes(req.body.alunoId)) {
+      return res.status(400).json({ message: 'Aluno já está na turma' });
+    }
+
+    turma.alunos_id.push(req.body.alunoId);
     await turma.save();
-    res.status(200).json({ message: 'Aluno adicionado com sucesso', turma });
+
+    const turmaAtualizada = await Turma.findById(req.params.id)
+      .populate('disciplina_id', 'nome')
+      .populate('professor_id', 'nomeCompleto')
+      .populate('alunos_id', 'nomeCompleto cpf matricula');
+
+    res.status(200).json({
+      message: 'Aluno adicionado com sucesso',
+      turma: {
+        _id: turmaAtualizada._id,
+        disciplina: turmaAtualizada.disciplina_id.nome,
+        professor: turmaAtualizada.professor_id.nomeCompleto,
+        alunos: turmaAtualizada.alunos_id.map(aluno => ({
+          _id: aluno._id,
+          nomeCompleto: aluno.nomeCompleto,
+          cpf: aluno.cpf,
+          matricula: aluno.matricula
+        })),
+        ano: turmaAtualizada.ano,
+        semestre: turmaAtualizada.semestre
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao adicionar aluno', error });
+    console.error('Erro ao adicionar aluno:', error);
+    res.status(500).json({ message: 'Erro ao adicionar aluno', error: error.message });
   }
 };
 
 const removerAluno = async (req, res) => {
   try {
-    const turma = await Turma.findById(req.body);
+    const turma = await Turma.findById(req.params.id);
     if (!turma) {
       return res.status(404).json({ message: 'Turma não encontrada' });
     }
-    turma.alunos = turma.alunos.filter(aluno => aluno.toString() !== req.body.alunoId);
+
+    turma.alunos_id = turma.alunos_id.filter(aluno => aluno.toString() !== req.body.alunoId);
     await turma.save();
     res.status(200).json({ message: 'Aluno removido com sucesso', turma });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao adicionar aluno', error });
+    console.error('Erro ao remover aluno:', error);
+    res.status(500).json({ message: 'Erro ao remover aluno', error: error.message });
   }
 };
 
