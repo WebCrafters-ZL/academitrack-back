@@ -49,16 +49,19 @@ const solicitarRedefinicaoSenha = async (req, res) => {
         usuario.resetSenhaExpira = Date.now() + 3600000;
         await usuario.save();
 
+        const linkRedefinicao = `http://localhost:8080/redefinir-senha/${resetToken}`;
+
         const mailOptions = {
             from: 'noreply@academitrack.edu.br',
             to: email,
             subject: 'Redefinição de Senha',
-            text: `Redefina sua senha clicando no link:\nhttp://localhost:8080/redefinir-senha/${resetToken}`
+            html: `<p>Você solicitou a redefinição de senha.</p>
+                <p>Clique no link (ou copie e cole na barra de endereço do navegador) para redefinir sua senha: <a href="${linkRedefinicao}" target="_blank">${linkRedefinicao}</a></p>`
         };
 
         await transporter.sendMail(mailOptions); // Usando o transporter importado
 
-        res.json({ message: 'E-mail de redefinição de senha enviado.' });
+        res.status(200).json({ message: 'E-mail de redefinição de senha enviado.' });
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor.' });
     }
@@ -83,7 +86,7 @@ const redefinirSenha = async (req, res) => {
         usuario.resetSenhaExpira = undefined;
         await usuario.save();
 
-        res.json({ message: 'Senha redefinida com sucesso.' });
+        res.status(200).json({ message: 'Senha redefinida com sucesso.' });
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor.' });
     }
